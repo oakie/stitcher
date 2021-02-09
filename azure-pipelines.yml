@@ -35,7 +35,5 @@ stages:
                 $(tag)
                 latest
 
-          - task: PublishPipelineArtifact@1
-            inputs:
-              artifactName: 'manifests'
-              path: 'manifests'
+          - upload: manifests
+            artifact: manifests
