@@ -52,7 +52,7 @@ stages:
             artifact: kubernetes
             displayName: Download kubernetes manifests from build stage
           
-          - bash: ls -al $(Pipeline.Workspace)
+          - bash: ls -al $(Pipeline.Workspace)/kubernetes
             
           - task: KubernetesManifest@0
             displayName: Apply manifest files to kubernetes cluster
