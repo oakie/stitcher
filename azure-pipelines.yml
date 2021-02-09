@@ -4,13 +4,16 @@ trigger:
 resources:
   - repo: self
 
+pool:
+  vmImage: $(vmImageName)
+
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '19721f4e-24c9-4322-aa4f-0c33b4a9c0f2'
   imageRepository: 'stitcher'
   containerRegistry: 'ekskog.azurecr.io'
   dockerfilePath: '**/Dockerfile'
-  tag: '$(Build.BuildId)'
+  tag: 'v$(Build.BuildId)'
   imagePullSecret: 'ekskog1144ea08-auth'
 
   # Agent VM image name
@@ -20,9 +23,8 @@ stages:
   - stage: build
     displayName: Build stage
     jobs:
-      - job: Build
-        pool:
-          vmImage: $(vmImageName)
+      - job: build
+        displayName: Build and push docker image
         steps:
           - task: Docker@2
             displayName: Build and push an image to container registry
@@ -38,3 +40,23 @@ stages:
           - publish: kubernetes
             artifact: kubernetes
             displayName: Publish kubernetes manifests
+
+  - stage: deploy
+    displayName: Deploy stage
+    dependsOn: build
+    jobs:
+      - job: deploy
+        displayName: Deploy to kubernetes cluster
+        steps:
+          - download: current
+            artifact: kubernetes
+            displayName: Download kubernetes manifests from build stage
+          
+          - task: KubernetesManifest@0
+            displayName: Apply manifest files to kubernetes cluster
+            inputs:
+              action: deploy
+              manifests: |
+                $(Pipeline.Workspace)/kubernetes/*.yml
+              containers: |
+                $(containerRegistry)/$(imageRepository):$(tag)
