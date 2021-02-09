@@ -35,5 +35,6 @@ stages:
                 $(tag)
                 latest
 
-          - upload: manifests
-            artifact: manifests
+          - publish: kubernetes
+            artifact: kubernetes
+            displayName: Publish kubernetes manifests
