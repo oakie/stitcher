@@ -1,0 +1,41 @@
+trigger:
+  - master
+
+resources:
+  - repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '19721f4e-24c9-4322-aa4f-0c33b4a9c0f2'
+  imageRepository: 'stitcher'
+  containerRegistry: 'ekskog.azurecr.io'
+  dockerfilePath: '**/Dockerfile'
+  tag: '$(Build.BuildId)'
+  imagePullSecret: 'ekskog1144ea08-auth'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+  - stage: build
+    displayName: Build stage
+    jobs:
+      - job: Build
+        pool:
+          vmImage: $(vmImageName)
+        steps:
+          - task: Docker@2
+            displayName: Build and push an image to container registry
+            inputs:
+              command: buildAndPush
+              repository: $(imageRepository)
+              dockerfile: $(dockerfilePath)
+              containerRegistry: $(dockerRegistryServiceConnection)
+              tags: |
+                $(tag)
+                latest
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+              artifactName: 'manifests'
+              path: 'manifests'
