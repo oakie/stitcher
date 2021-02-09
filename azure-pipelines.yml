@@ -5,21 +5,19 @@ resources:
   - repo: self
 
 pool:
-  vmImage: $(vmImageName)
+  vmImage: 'ubuntu-latest'
 
 variables:
-  # Container registry service connection established during pipeline creation
+  # Docker variables
   dockerRegistryServiceConnection: '19721f4e-24c9-4322-aa4f-0c33b4a9c0f2'
   imageRepository: 'stitcher'
   containerRegistry: 'ekskog.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   tag: 'v$(Build.BuildId)'
-  imagePullSecret: 'ekskog1144ea08-auth'
 
+  # Kubernetes variables
   kubernetesServiceConnection: 'ekskog-kubernetes-cluster-stitcher'
-
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  kubernetesNamespace: 'stitcher'
 
 stages:
   - stage: build
@@ -54,11 +52,14 @@ stages:
             artifact: kubernetes
             displayName: Download kubernetes manifests from build stage
           
+          - bash: ls -al $(Pipeline.Workspace)
+            
           - task: KubernetesManifest@0
             displayName: Apply manifest files to kubernetes cluster
             inputs:
               action: deploy
               kubernetesServiceConnection: $(kubernetesServiceConnection)
+              namespace: $(kubernetesNamespace)
               manifests: |
                 $(Pipeline.Workspace)/kubernetes/*.yml
               containers: |
