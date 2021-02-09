@@ -52,8 +52,6 @@ stages:
             artifact: kubernetes
             displayName: Download kubernetes manifests from build stage
           
-          - bash: ls -al $(Pipeline.Workspace)/kubernetes
-            
           - task: KubernetesManifest@0
             displayName: Apply manifest files to kubernetes cluster
             inputs:
@@ -61,6 +59,6 @@ stages:
               kubernetesServiceConnection: $(kubernetesServiceConnection)
               namespace: $(kubernetesNamespace)
               manifests: |
-                $(Pipeline.Workspace)/kubernetes/*.yml
+                $(Pipeline.Workspace)/kubernetes/*.yaml
               containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
