@@ -16,6 +16,8 @@ variables:
   tag: 'v$(Build.BuildId)'
   imagePullSecret: 'ekskog1144ea08-auth'
 
+  kubernetesServiceConnection: 'ekskog-kubernetes-cluster-stitcher'
+
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
@@ -56,6 +58,7 @@ stages:
             displayName: Apply manifest files to kubernetes cluster
             inputs:
               action: deploy
+              kubernetesServiceConnection: $(kubernetesServiceConnection)
               manifests: |
                 $(Pipeline.Workspace)/kubernetes/*.yml
               containers: |
