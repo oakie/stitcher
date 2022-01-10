@@ -1,9 +1,18 @@
+import { Symbols } from '../../shared/constants';
+import StringUtils from '../../utils/string-utils';
 import { types } from '../actions';
 
-const initial = () => ({
-  byId: {},
-  selectedId: null
-});
+const initial = () => {
+  const layer = {
+    id: StringUtils.random(5),
+    symbol: Symbols.CROSS,
+    color: '#000'
+  };
+  return ({
+    byId: {[layer.id]: layer},
+    selectedId: layer.id
+  });
+};
 
 const reducer = (state = initial(), action) => {
   switch (action.type) {
