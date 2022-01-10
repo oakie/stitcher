@@ -1,7 +1,3 @@
-import React from 'react';
-
-const Palette = () => {
-  return <></>;
-};
+import Palette from './palette';
 
 export default Palette;

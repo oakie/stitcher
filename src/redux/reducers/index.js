@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
+import cells from './cell-reducer';
+import layers from './layer-reducer';
 
-import cells from './cells';
-
-const reducer = combineReducers({ cells });
+const reducer = combineReducers({ cells, layers });
 
 export default reducer;

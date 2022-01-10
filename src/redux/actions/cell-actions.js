@@ -1,21 +1,10 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-
-export const types = {
-  CELLS: {
-    CREATE: 'cells.create',
-    UPDATE: 'cells.update',
-    REMOVE: 'cells.remove',
-    RESET: 'cells.reset'
-  }
-};
+import types from './types';
 
 const createCell = (payload) => ({ type: types.CELLS.CREATE, payload });
-
 const updateCell = (payload) => ({ type: types.CELLS.UPDATE, payload });
-
-const removeCell = (id) => ({ type: types.CELLS.REMOVE, payload: id });
-
+const removeCell = (payload) => ({ type: types.CELLS.REMOVE, payload });
 const resetCells = () => ({ type: types.CELLS.RESET });
 
 const useCellActions = () => {

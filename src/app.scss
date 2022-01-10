@@ -1,0 +1,12 @@
+.bottom-center {
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+
+  * {
+    position: relative;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
