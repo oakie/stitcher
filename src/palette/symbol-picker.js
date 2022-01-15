@@ -1,21 +1,21 @@
 import React from 'react';
 import { ButtonGroup, ToggleButton } from 'react-bootstrap';
-import { useLayerActions } from '../redux/actions';
+import { useBrushActions } from '../redux/actions';
 import { Symbols } from '../shared/constants';
-import LayerSymbol from './layer-symbol';
+import BrushSymbol from './brush-symbol';
 
-const SymbolPicker = React.memo(({ layer }) => {
-  const layerActions = useLayerActions();
+const SymbolPicker = React.memo(({ brush }) => {
+  const brushActions = useBrushActions();
   const symbols = Object.values(Symbols);
 
   const handleClick = React.useCallback((e) => e.target.blur(), []);
 
   const handlePickSymbol = React.useCallback(
     (e) => {
-      const payload = { ...layer, symbol: e.target.value };
-      layerActions.update(payload);
+      const payload = { ...brush, symbol: e.target.value };
+      brushActions.update(payload);
     },
-    [layer, layerActions]
+    [brush, brushActions]
   );
 
   return (
@@ -26,11 +26,11 @@ const SymbolPicker = React.memo(({ layer }) => {
           variant="outline-dark"
           type="checkbox"
           value={s}
-          checked={layer.symbol === s}
+          checked={brush.symbol === s}
           onClick={handleClick}
           onChange={handlePickSymbol}
         >
-          <LayerSymbol symbol={s} />
+          <BrushSymbol symbol={s} />
         </ToggleButton>
       ))}
     </ButtonGroup>

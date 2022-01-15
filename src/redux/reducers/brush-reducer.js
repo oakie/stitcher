@@ -3,20 +3,23 @@ import StringUtils from '../../utils/string-utils';
 import { types } from '../actions';
 
 const initial = () => {
-  const layer = {
+  const cross = {
     id: StringUtils.random(5),
     symbol: Symbols.CROSS,
     color: '#000'
   };
+
   return ({
-    byId: {[layer.id]: layer},
-    selectedId: layer.id
+    byId: {
+      [cross.id]: cross
+    },
+    selectedId: cross.id
   });
 };
 
 const reducer = (state = initial(), action) => {
   switch (action.type) {
-    case types.LAYERS.CREATE:
+    case types.BRUSHES.CREATE:
       return {
         ...state,
         byId: {
@@ -25,7 +28,7 @@ const reducer = (state = initial(), action) => {
         },
         selectedId: action.payload.id
       };
-    case types.LAYERS.UPDATE:
+    case types.BRUSHES.UPDATE:
       if (Array.isArray(action.payload)) {
         const newState = { ...state };
         for (let c of action.payload) {
@@ -41,7 +44,7 @@ const reducer = (state = initial(), action) => {
           }
         };
       }
-    case types.LAYERS.REMOVE:
+    case types.BRUSHES.REMOVE:
       if (Array.isArray(action.payload)) {
         for (let id of action.payload) {
           delete state.byId[id];
@@ -52,7 +55,7 @@ const reducer = (state = initial(), action) => {
       return {
         ...state
       };
-    case types.LAYERS.SELECT:
+    case types.BRUSHES.SELECT:
       if (!action.payload) {
         return {
           ...state,
@@ -64,7 +67,7 @@ const reducer = (state = initial(), action) => {
           selectedId: action.payload
         };
       }
-    case types.LAYERS.RESET:
+    case types.BRUSHES.RESET:
       return initial();
     default:
       return state;

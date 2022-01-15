@@ -7,8 +7,8 @@ const symbols = {
   [Symbols.SQUARE]: 'square'
 };
 
-const LayerSymbol = React.memo(({ symbol, ...props }) => (
+const BrushSymbol = React.memo(({ symbol, ...props }) => (
   <FontAwesomeIcon icon={symbols[symbol] || 'question-circle'} {...props} />
 ));
 
-export default LayerSymbol;
+export default BrushSymbol;

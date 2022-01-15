@@ -7,14 +7,14 @@ import Card from 'react-bootstrap/Card';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import { useSelector } from 'react-redux';
-import { useLayerActions } from '../redux/actions';
+import { useBrushActions } from '../redux/actions';
 import { Symbols } from '../shared/constants';
 import StringUtils from '../utils/string-utils';
 import ColorPicker from './color-picker';
-import LayerSymbol from './layer-symbol';
+import BrushSymbol from './brush-symbol';
 import SymbolPicker from './symbol-picker';
 
-const PaletteLayerButton = React.memo(({ layer, ...props }) => {
+const PaletteBrushButton = React.memo(({ brush, ...props }) => {
   const handleClick = React.useCallback((e) => {
     e.target.blur();
   }, []);
@@ -23,12 +23,12 @@ const PaletteLayerButton = React.memo(({ layer, ...props }) => {
     <ToggleButton
       variant="outline-dark"
       type="checkbox"
-      value={layer.id}
+      value={brush.id}
       onClick={handleClick}
       {...props}
     >
-      <span style={{ color: layer.color }}>
-        <LayerSymbol symbol={layer.symbol} />
+      <span style={{ color: brush.color }}>
+        <BrushSymbol symbol={brush.symbol} />
       </span>
     </ToggleButton>
   );
@@ -58,24 +58,24 @@ const PopoverButton = ({ header, content, children }) => {
   );
 };
 
-const CurrentLayer = React.memo(({ layer }) => {
-  if (!layer) {
+const CurrentBrush = React.memo(({ brush }) => {
+  if (!brush) {
     return null;
   }
 
   return (
     <ButtonGroup className="mr-5">
       <PopoverButton
-        header="Select layer color"
-        content={<ColorPicker layer={layer} />}
+        header="Select brush color"
+        content={<ColorPicker brush={brush} />}
       >
-        <FontAwesomeIcon icon="palette" color={layer.color} />
+        <FontAwesomeIcon icon="palette" color={brush.color} />
       </PopoverButton>
       <PopoverButton
-        header="Select layer symbol"
-        content={<SymbolPicker layer={layer} />}
+        header="Select brush symbol"
+        content={<SymbolPicker brush={brush} />}
       >
-        <LayerSymbol symbol={layer.symbol} />
+        <BrushSymbol symbol={brush.symbol} />
       </PopoverButton>
     </ButtonGroup>
   );
@@ -83,58 +83,71 @@ const CurrentLayer = React.memo(({ layer }) => {
 
 const selector = (state) => {
   return {
-    layers: state.layers.byId,
-    selected: state.layers.selectedId
+    brushes: state.brushes.byId,
+    selected: state.brushes.selectedId
   };
 };
 
 const Palette = () => {
   const state = useSelector(selector);
-  const layerActions = useLayerActions();
-  const layerList = Object.values(state.layers);
+  const brushActions = useBrushActions();
+  const brushList = Object.values(state.brushes);
 
-  const handleSelectLayer = React.useCallback(
+  const handleSelectEraser = React.useCallback((e) => {
+    e.target.blur();
+    brushActions.select();
+  });
+
+  const handleSelectBrush = React.useCallback(
     (e) => {
       if (state.selected === e.target.value) {
-        layerActions.select();
+        brushActions.select();
       } else {
-        layerActions.select(e.target.value);
+        brushActions.select(e.target.value);
       }
     },
-    [state.selected, layerActions]
+    [state.selected, brushActions]
   );
 
-  const handleCreateLayer = React.useCallback(
+  const handleCreateBrush = React.useCallback(
     (e) => {
       e.target.blur();
-      const layer = {
+      const brush = {
         id: StringUtils.random(5),
         symbol: Symbols.CROSS,
         color: '#000'
       };
-      layerActions.create(layer);
+      brushActions.create(brush);
     },
-    [layerActions]
+    [brushActions]
   );
 
   return (
     <>
       <Card>
         <Card.Body className="p-1">
-          <CurrentLayer layer={state.layers[state.selected]} />
+          <CurrentBrush brush={state.brushes[state.selected]} />
           <ButtonGroup toggle size="sm">
-            {layerList.map((l) => (
-              <PaletteLayerButton
+            <ToggleButton
+              variant="outline-dark"
+              type="checkbox"
+              checked={!state.selected}
+              onClick={handleSelectEraser}
+            >
+              <FontAwesomeIcon icon="eraser" />
+            </ToggleButton>
+            {brushList.map((l) => (
+              <PaletteBrushButton
                 key={l.id}
-                layer={l}
+                brush={l}
                 checked={state.selected === l.id}
-                onChange={handleSelectLayer}
+                onChange={handleSelectBrush}
               />
             ))}
           </ButtonGroup>
           <Button
             variant="outline-dark"
-            onClick={handleCreateLayer}
+            onClick={handleCreateBrush}
             size="sm"
             className="ml-3"
           >

@@ -61,7 +61,8 @@ const getCenter = (p1, p2) => {
 
 const selector = () => {
   return (state) => ({
-    layer: state.layers.byId[state.layers.selectedId]
+    brush: state.brushes.byId[state.brushes.selectedId],
+    cells: state.cells.byId
   });
 };
 
@@ -186,23 +187,29 @@ export const useCanvasControls = (size) => {
       pointer.current.down = false;
       pointer.current.prev = false;
 
-      if (state.layer) {
+      if (state.brush) {
         const cells = [];
         for (let c of draft.current) {
           cells.push({
             x: c.x,
             y: c.y,
             id: `${c.x}:${c.y}`,
-            layerId: state.layer.id
+            brushId: state.brush.id
           });
         }
         cellActions.update(cells);
+      } else {
+        const cells = [];
+        for (let c of draft.current) {
+          cells.push(`${c.x}:${c.y}`);
+        }
+        cellActions.remove(cells);
       }
 
       clearDraftLayer(stage);
       draft.current = [];
     },
-    [cellActions, state.layer]
+    [cellActions, state.brush]
   );
 
   const handleMouseUp = React.useCallback(
@@ -255,16 +262,17 @@ export const useCanvasControls = (size) => {
       if (curr.x !== prev.x || curr.y !== prev.y) {
         const layer = stage.find('.' + DRAFT_LAYER)[0];
         const cells = CellUtils.getCellsOnLine(prev, curr);
+        const color = state.brush ? state.brush.color : '#fff';
 
         for (let c of cells) {
           draft.current.push(c);
-          drawSquare(layer, c.x, c.y, state.layer.color);
+          drawSquare(layer, c.x, c.y, color);
         }
       }
 
       pointer.current.prev = curr;
     },
-    [state.layer]
+    [state.brush]
   );
 
   const handleMouseMove = React.useCallback(

@@ -1,24 +1,24 @@
 import React from 'react';
 import { ChromePicker } from 'react-color';
-import { useLayerActions } from '../redux/actions';
+import { useBrushActions } from '../redux/actions';
 import './color-picker.scss';
 
-const ColorPicker = React.memo(({ layer }) => {
-  const layerActions = useLayerActions();
+const ColorPicker = React.memo(({ brush }) => {
+  const brushActions = useBrushActions();
 
   const handlePickColor = React.useCallback(
     (color) => {
-      const payload = { ...layer, color: color.hex };
-      layerActions.update(payload);
+      const payload = { ...brush, color: color.hex };
+      brushActions.update(payload);
     },
-    [layerActions, layer]
+    [brushActions, brush]
   );
 
   return (
     <ChromePicker
       className="color-picker"
       disableAlpha
-      color={layer.color}
+      color={brush.color}
       onChangeComplete={handlePickColor}
     />
   );

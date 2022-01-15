@@ -5,12 +5,12 @@ const types = {
     REMOVE: 'cells.remove',
     RESET: 'cells.reset'
   },
-  LAYERS: {
-    CREATE: 'layers.create',
-    UPDATE: 'layers.update',
-    REMOVE: 'layers.remove',
-    SELECT: 'layers.select',
-    RESET: 'layers.reset'
+  BRUSHES: {
+    CREATE: 'brush.create',
+    UPDATE: 'brush.update',
+    REMOVE: 'brush.remove',
+    SELECT: 'brush.select',
+    RESET: 'brush.reset'
   }
 };
 Object.freeze(types);

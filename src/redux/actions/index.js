@@ -1,5 +1,5 @@
 import useCellActions from './cell-actions';
-import useLayerActions from './layer-actions';
+import useBrushActions from './brush-actions';
 import types from './types';
 
-export { types, useCellActions, useLayerActions };
+export { types, useCellActions, useBrushActions };

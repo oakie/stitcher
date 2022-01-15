@@ -3,19 +3,22 @@ import { Group, Line } from 'react-konva';
 import { Symbols } from '../shared/constants';
 
 const CellCross = React.memo(({ color }) => {
+  const halfStroke = 0.1;
   return (
     <>
       <Line
-        points={[0, 0, 1, 1]}
+        points={[halfStroke, halfStroke, 1 - halfStroke, 1 - halfStroke]}
         stroke={color}
-        strokeWidth={0.2}
+        strokeWidth={2 * halfStroke}
+        lineCap="round"
         listening={false}
         transformsEnabled=""
       />
       <Line
-        points={[0, 1, 1, 0]}
+        points={[halfStroke, 1 - halfStroke, 1 - halfStroke, halfStroke]}
         stroke={color}
-        strokeWidth={0.2}
+        strokeWidth={2 * halfStroke}
+        lineCap="round"
         listening={false}
         transformsEnabled=""
       />
@@ -30,7 +33,7 @@ const CellSquare = React.memo(({ color }) => {
       closed
       fill={color}
       stroke={color}
-      strokeWidth={0.1}
+      strokeWidth={0}
       listening={false}
       transformsEnabled=""
     />

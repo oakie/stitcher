@@ -11,21 +11,21 @@ import StageWithContext from './stage-with-context';
 const selector = (state) => {
   return {
     cells: Object.values(state.cells.byId),
-    layers: state.layers.byId
+    brushes: state.brushes.byId
   };
 };
 
-const renderCells = (cells, layers) => {
+const renderCells = (cells, brushes) => {
   const result = [];
   for (let cell of cells) {
-    const layer = layers[cell.layerId];
+    const brush = brushes[cell.brushId];
     result.push(
       <Cell
         key={cell.id}
         x={cell.x}
         y={cell.y}
-        symbol={layer.symbol}
-        color={layer.color}
+        symbol={brush.symbol}
+        color={brush.color}
       />
     );
   }
@@ -35,9 +35,9 @@ const renderCells = (cells, layers) => {
 export const Canvas = ({ container, size }) => {
   const [scale, center, handlers] = useCanvasControls(size);
   const state = useSelector(selector);
-  const cells = React.useMemo(() => renderCells(state.cells, state.layers), [
+  const cells = React.useMemo(() => renderCells(state.cells, state.brushes), [
     state.cells,
-    state.layers
+    state.brushes
   ]);
 
   return (
@@ -49,11 +49,11 @@ export const Canvas = ({ container, size }) => {
         y={0.5 * size.height - center.y * scale.y}
         {...handlers}
       >
+        <Layer listening={false}>{cells}</Layer>
+        <Layer listening={false} name={DRAFT_LAYER} />
         <Layer listening={false}>
           <StageGrid scale={scale} size={size} center={center} />
         </Layer>
-        <Layer listening={false}>{cells}</Layer>
-        <Layer listening={false} name={DRAFT_LAYER} />
       </StageWithContext>
     </div>
   );
