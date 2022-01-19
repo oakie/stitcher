@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Popover } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
@@ -9,9 +8,10 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 import { useSelector } from 'react-redux';
 import { useBrushActions } from '../redux/actions';
 import { Symbols } from '../shared/constants';
+import Icon from '../shared/icon';
 import StringUtils from '../utils/string-utils';
-import ColorPicker from './color-picker';
 import BrushSymbol from './brush-symbol';
+import ColorPicker from './color-picker';
 import SymbolPicker from './symbol-picker';
 
 const PaletteBrushButton = React.memo(({ brush, ...props }) => {
@@ -21,7 +21,7 @@ const PaletteBrushButton = React.memo(({ brush, ...props }) => {
 
   return (
     <ToggleButton
-      variant="outline-dark"
+      variant="outline-secondary"
       type="checkbox"
       value={brush.id}
       onClick={handleClick}
@@ -51,7 +51,7 @@ const PopoverButton = ({ header, content, children }) => {
         </Popover>
       }
     >
-      <Button variant="light" size="sm" onClick={handleClick}>
+      <Button variant="outline-secondary" size="sm" onClick={handleClick}>
         <>{children}</>
       </Button>
     </OverlayTrigger>
@@ -69,7 +69,7 @@ const CurrentBrush = React.memo(({ brush }) => {
         header="Select brush color"
         content={<ColorPicker brush={brush} />}
       >
-        <FontAwesomeIcon icon="palette" color={brush.color} />
+        <Icon icon="palette" color={brush.color} />
       </PopoverButton>
       <PopoverButton
         header="Select brush symbol"
@@ -124,17 +124,17 @@ const Palette = () => {
 
   return (
     <>
-      <Card>
+      <Card bg="dark">
         <Card.Body className="p-1">
           <CurrentBrush brush={state.brushes[state.selected]} />
           <ButtonGroup toggle size="sm">
             <ToggleButton
-              variant="outline-dark"
+              variant="outline-secondary"
               type="checkbox"
               checked={!state.selected}
               onClick={handleSelectEraser}
             >
-              <FontAwesomeIcon icon="eraser" />
+              <Icon icon="eraser" />
             </ToggleButton>
             {brushList.map((l) => (
               <PaletteBrushButton
@@ -146,12 +146,12 @@ const Palette = () => {
             ))}
           </ButtonGroup>
           <Button
-            variant="outline-dark"
+            variant="outline-secondary"
             onClick={handleCreateBrush}
             size="sm"
             className="ml-3"
           >
-            <FontAwesomeIcon icon="plus" />
+            <Icon icon="plus" />
           </Button>
         </Card.Body>
       </Card>

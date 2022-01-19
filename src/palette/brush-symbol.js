@@ -1,6 +1,6 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 import { Symbols } from '../shared/constants';
+import Icon from '../shared/icon';
 
 const symbols = {
   [Symbols.CROSS]: 'times',
@@ -8,7 +8,7 @@ const symbols = {
 };
 
 const BrushSymbol = React.memo(({ symbol, ...props }) => (
-  <FontAwesomeIcon icon={symbols[symbol] || 'question-circle'} {...props} />
+  <Icon icon={symbols[symbol] || 'question-circle'} {...props} />
 ));
 
 export default BrushSymbol;
