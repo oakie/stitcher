@@ -1,7 +1,13 @@
 import React from 'react';
 import { ChromePicker } from 'react-color';
 import { useBrushActions } from '../redux/actions';
-import './color-picker.scss';
+import { styled } from 'styled-components';
+
+const StyledColorPicker = styled(ChromePicker)`
+  box-shadow: initial !important;
+  font-family: inherit !important;
+  font-weight: bold;
+`;
 
 const ColorPicker = React.memo(({ brush }) => {
   const brushActions = useBrushActions();
@@ -15,8 +21,7 @@ const ColorPicker = React.memo(({ brush }) => {
   );
 
   return (
-    <ChromePicker
-      className="color-picker"
+    <StyledColorPicker
       disableAlpha
       color={brush.color}
       onChangeComplete={handlePickColor}
