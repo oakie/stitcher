@@ -20,7 +20,7 @@ const BottomCenter = styled.div`
   bottom: 0;
   width: 100vw;
 
-  * {
+  > * {
     position: relative;
     width: fit-content;
     margin-left: auto;

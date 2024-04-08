@@ -12,7 +12,7 @@ const MAX_SCALE = 100;
 const screenToWorld = (pos, size, scale) => {
   return {
     x: (0.5 * size.width - pos.x) / scale.x,
-    y: (0.5 * size.height - pos.y) / scale.y
+    y: (0.5 * size.height - pos.y) / scale.y,
   };
 };
 
@@ -33,7 +33,7 @@ const drawSquare = (layer, x, y, color) => {
     y,
     width: 1,
     height: 1,
-    fill: color
+    fill: color,
   });
   layer.add(square);
   square.draw();
@@ -41,7 +41,7 @@ const drawSquare = (layer, x, y, color) => {
 };
 
 const clearDraftLayer = (stage) => {
-  const layer = stage.find('.' + DRAFT_LAYER);
+  const layer = stage.find('.' + DRAFT_LAYER)[0];
   layer.removeChildren();
   layer.draw();
 };
@@ -55,14 +55,14 @@ const getDistance = (p1, p2) => {
 const getCenter = (p1, p2) => {
   return {
     x: 0.5 * (p1.x + p2.x),
-    y: 0.5 * (p1.y + p2.y)
+    y: 0.5 * (p1.y + p2.y),
   };
 };
 
 const selector = () => {
   return (state) => ({
     brush: state.brushes.byId[state.brushes.selectedId],
-    cells: state.cells.byId
+    cells: state.cells.byId,
   });
 };
 
@@ -90,13 +90,13 @@ export const useCanvasControls = (size) => {
 
       const mousePointTo = {
         x: stage.getPointerPosition().x / oldScale - stage.x() / oldScale,
-        y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale
+        y: stage.getPointerPosition().y / oldScale - stage.y() / oldScale,
       };
 
       const newScale = { x: factor, y: factor };
       const newCenter = {
         x: -(mousePointTo.x - stage.getPointerPosition().x / factor) * factor,
-        y: -(mousePointTo.y - stage.getPointerPosition().y / factor) * factor
+        y: -(mousePointTo.y - stage.getPointerPosition().y / factor) * factor,
       };
 
       setScale(newScale);
@@ -129,7 +129,7 @@ export const useCanvasControls = (size) => {
     stage.scale({ x: newScale, y: newScale });
     stage.position({
       x: stage.x() + dx * newScale,
-      y: stage.y() + dy * newScale
+      y: stage.y() + dy * newScale,
     });
     stage.batchDraw();
 
@@ -144,7 +144,7 @@ export const useCanvasControls = (size) => {
 
     pointer.current = {
       down: pos,
-      prev: cell
+      prev: cell,
     };
     draft.current = [cell];
   }, []);
@@ -194,7 +194,7 @@ export const useCanvasControls = (size) => {
             x: c.x,
             y: c.y,
             id: `${c.x}:${c.y}`,
-            brushId: state.brush.id
+            brushId: state.brush.id,
           });
         }
         cellActions.update(cells);
@@ -243,7 +243,7 @@ export const useCanvasControls = (size) => {
       const scale = stage.scaleX();
       setCenter({
         x: (0.5 * size.width - stage.x()) / scale,
-        y: (0.5 * size.height - stage.y()) / scale
+        y: (0.5 * size.height - stage.y()) / scale,
       });
       setScale({ x: scale, y: scale });
     },
@@ -360,7 +360,7 @@ export const useCanvasControls = (size) => {
       onContextMenu: handleContextMenu,
       onTouchStart: handleTouchDown,
       onTouchEnd: handleTouchUp,
-      onTouchMove: handleTouchMove
+      onTouchMove: handleTouchMove,
     }),
     [
       handleWheel,
@@ -372,15 +372,14 @@ export const useCanvasControls = (size) => {
       handleContextMenu,
       handleTouchDown,
       handleTouchUp,
-      handleTouchMove
+      handleTouchMove,
     ]
   );
 
-  const controls = React.useMemo(() => [scale, center, handlers], [
-    scale,
-    center,
-    handlers
-  ]);
+  const controls = React.useMemo(
+    () => [scale, center, handlers],
+    [scale, center, handlers]
+  );
 
   return controls;
 };
