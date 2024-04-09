@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Group, Line } from 'react-konva';
-import { Symbols } from '../shared/constants';
+import { Symbol } from "../shared/types";
 
-const CellCross = React.memo(({ color }) => {
+export interface CellShapeProps {
+  color: string;
+}
+
+const CellCross: FC<CellShapeProps> = React.memo(({ color }) => {
   const halfStroke = 0.1;
   return (
     <>
@@ -26,7 +30,7 @@ const CellCross = React.memo(({ color }) => {
   );
 });
 
-const CellSquare = React.memo(({ color }) => {
+const CellSquare: FC<CellShapeProps> = React.memo(({ color }) => {
   return (
     <Line
       points={[0, 0, 1, 0, 1, 1, 0, 1]}
@@ -40,21 +44,28 @@ const CellSquare = React.memo(({ color }) => {
   );
 });
 
-const createShape = (symbol, color) => {
-  if (symbol === Symbols.CROSS) {
+const createShape = (symbol: Symbol, color: string) => {
+  if (symbol === Symbol.CROSS) {
     return <CellCross color={color} />;
   }
-  if (symbol === Symbols.SQUARE) {
+  if (symbol === Symbol.SQUARE) {
     return <CellSquare color={color} />;
   }
   return null;
 };
 
-const Cell = ({ x, y, symbol, color }) => {
-  const shape = React.useMemo(() => createShape(symbol, color), [
-    color,
-    symbol
-  ]);
+export interface CellProps {
+  x: number;
+  y: number;
+  symbol: Symbol;
+  color: string;
+}
+
+const Cell: FC<CellProps> = ({ x, y, symbol, color }) => {
+  const shape = React.useMemo(
+    () => createShape(symbol, color),
+    [color, symbol]
+  );
 
   return (
     <Group x={x} y={y} listening={false} transformsEnabled="position">

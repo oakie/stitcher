@@ -1,7 +1,7 @@
-const CellUtils = {};
+import { Vector2d } from 'konva/lib/types';
 
-CellUtils.getCellsOnLine = (p1, p2) => {
-  const result = [];
+export const getCellsOnLine = (p1: Vector2d, p2: Vector2d) => {
+  const result: Vector2d[] = [];
 
   let x0 = p1.x;
   let y0 = p1.y;
@@ -34,6 +34,3 @@ CellUtils.getCellsOnLine = (p1, p2) => {
 
   return result;
 };
-
-Object.freeze(CellUtils);
-export default CellUtils;

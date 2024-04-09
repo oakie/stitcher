@@ -1,7 +1,8 @@
-import React from 'react';
-import { ChromePicker } from 'react-color';
-import { useBrushActions } from '../redux/actions';
+import React, { FC } from 'react';
+import { ChromePicker, ColorResult } from 'react-color';
 import { styled } from 'styled-components';
+import { Brush } from '../shared/types';
+import { useBrushActions } from '../store';
 
 const StyledColorPicker = styled(ChromePicker)`
   box-shadow: initial !important;
@@ -9,11 +10,15 @@ const StyledColorPicker = styled(ChromePicker)`
   font-weight: bold;
 `;
 
-const ColorPicker = React.memo(({ brush }) => {
+interface ColorPickerProps {
+  brush: Brush;
+}
+
+const ColorPicker: FC<ColorPickerProps> = React.memo(({ brush }) => {
   const brushActions = useBrushActions();
 
   const handlePickColor = React.useCallback(
-    (color) => {
+    (color: ColorResult) => {
       const payload = { ...brush, color: color.hex };
       brushActions.update(payload);
     },

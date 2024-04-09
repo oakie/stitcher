@@ -1,15 +1,19 @@
-import React from 'react';
-import { ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
-import { useBrushActions } from '../redux/actions';
-import { Symbols } from '../shared/constants';
+import React, { FC } from 'react';
+import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { Brush, Symbol } from '../shared/types';
+import { useBrushActions } from '../store';
 import BrushSymbol from './brush-symbol';
 
-const SymbolPicker = React.memo(({ brush }) => {
+interface SymbolPickerProps {
+  brush: Brush;
+}
+
+const SymbolPicker: FC<SymbolPickerProps> = React.memo(({ brush }) => {
   const brushActions = useBrushActions();
-  const symbols = Object.values(Symbols);
+  const symbols = Object.values(Symbol);
 
   const handlePickSymbol = React.useCallback(
-    (_, e) => {
+    (_: any, e: any) => {
       const payload = { ...brush, symbol: e.target.value };
       brushActions.update(payload);
     },

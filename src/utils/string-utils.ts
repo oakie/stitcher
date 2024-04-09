@@ -1,7 +1,5 @@
-const StringUtils = {};
-
 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-StringUtils.random = (length) => {
+const random = (length: number) => {
   var result = '';
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
@@ -10,5 +8,5 @@ StringUtils.random = (length) => {
   return result;
 };
 
-Object.freeze(StringUtils);
+const StringUtils = { random };
 export default StringUtils;

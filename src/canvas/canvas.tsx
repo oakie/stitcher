@@ -1,34 +1,35 @@
-import React from 'react';
-import { Layer } from 'react-konva';
+import React, { FC, RefCallback } from 'react';
+import { Layer, Stage } from 'react-konva';
 import { useSelector } from 'react-redux';
+import { styled } from 'styled-components';
 import Cell from '../cell';
 import StageGrid from '../grid';
+import { Brush, Size, Stitch } from '../shared/types';
+import { RootState } from '../store';
 import { useCanvasControls } from './canvas-controls';
 import { DRAFT_LAYER } from './constants';
-import StageWithContext from './stage-with-context';
-import { styled } from 'styled-components';
 
 const CanvasContainer = styled.div`
   width: 100%;
   height: 100%;
 `;
 
-const selector = (state) => {
+const selector = (state: RootState) => {
   return {
-    cells: Object.values(state.cells.byId),
+    stitches: Object.values(state.stitches.byId),
     brushes: state.brushes.byId,
   };
 };
 
-const renderCells = (cells, brushes) => {
-  const result = [];
-  for (let cell of cells) {
-    const brush = brushes[cell.brushId];
+const renderCells = (stitches: Stitch[], brushes: { [key: string]: Brush }) => {
+  const result: React.ReactElement[] = [];
+  for (let stitch of stitches) {
+    const brush = brushes[stitch.brush];
     result.push(
       <Cell
-        key={cell.id}
-        x={cell.x}
-        y={cell.y}
+        key={stitch.id}
+        x={stitch.x}
+        y={stitch.y}
         symbol={brush.symbol}
         color={brush.color}
       />
@@ -37,17 +38,22 @@ const renderCells = (cells, brushes) => {
   return result;
 };
 
-export const Canvas = ({ container, size }) => {
-  const [scale, center, handlers] = useCanvasControls(size);
+interface CanvasProps {
+  container: RefCallback<Element>;
+  size: Size;
+}
+
+export const Canvas: FC<CanvasProps> = ({ container, size }) => {
+  const { scale, center, handlers } = useCanvasControls(size);
   const state = useSelector(selector);
   const cells = React.useMemo(
-    () => renderCells(state.cells, state.brushes),
-    [state.cells, state.brushes]
+    () => renderCells(state.stitches, state.brushes),
+    [state.stitches, state.brushes]
   );
 
   return (
     <CanvasContainer ref={container}>
-      <StageWithContext
+      <Stage
         {...size}
         scale={scale}
         x={0.5 * size.width - center.x * scale.x}
@@ -59,7 +65,7 @@ export const Canvas = ({ container, size }) => {
         <Layer listening={false}>
           <StageGrid scale={scale} size={size} center={center} />
         </Layer>
-      </StageWithContext>
+      </Stage>
     </CanvasContainer>
   );
 };

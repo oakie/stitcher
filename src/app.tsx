@@ -1,7 +1,7 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
+import React, { FC } from 'react';
 import { styled } from 'styled-components';
 import useResizeObserver from 'use-resize-observer';
 import Canvas from './canvas';
@@ -28,13 +28,13 @@ const BottomCenter = styled.div`
   }
 `;
 
-const App = () => {
+const App: FC = () => {
   const { ref, width = 1, height = 1 } = useResizeObserver();
   const size = React.useMemo(() => ({ width, height }), [width, height]);
 
   return (
     <AppContainer className="overflow-hidden d-flex flex-column">
-      <Header className="" />
+      <Header />
       <div className="flex-grow-1">
         <Canvas container={ref} size={size} />
       </div>
