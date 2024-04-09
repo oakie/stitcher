@@ -48,7 +48,7 @@ const Canvas: FC<CanvasProps> = ({ container, size }) => {
   );
 
   return (
-    <CanvasContainer ref={container}>
+    <CanvasContainer ref={container} className="bg-light">
       <Stage
         {...size}
         scale={scale}

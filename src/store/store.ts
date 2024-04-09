@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
+import auth from './slices/auth-slice';
 import brushes from './slices/brush-slice';
 import stitches from './slices/stitch-slice';
 
 export const store = configureStore({
   reducer: {
+    auth,
     brushes,
     stitches,
   },

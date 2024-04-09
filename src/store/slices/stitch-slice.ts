@@ -1,11 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Stitch } from '@shared/types';
-
-export interface StitchState {
-  byId: {
-    [key: string]: Stitch;
-  };
-}
+import { StitchState } from '../types';
 
 const initial = (): StitchState => {
   return {

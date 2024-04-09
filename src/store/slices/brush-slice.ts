@@ -1,13 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Brush, Symbol } from '@shared/types';
 import StringUtils from '@utils/string-utils';
-
-export interface BrushState {
-  byId: {
-    [key: string]: Brush;
-  };
-  selected: Brush | null;
-}
+import { BrushState } from '../types';
 
 const initial = (): BrushState => {
   const cross = {
