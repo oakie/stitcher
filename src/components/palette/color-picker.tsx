@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { ChromePicker, ColorResult } from 'react-color';
 import { styled } from 'styled-components';
-import { Brush } from '../shared/types';
-import { useBrushActions } from '../store';
+import { Brush } from '@shared/types';
+import { useBrushActions } from '@store';
 
 const StyledColorPicker = styled(ChromePicker)`
   box-shadow: initial !important;

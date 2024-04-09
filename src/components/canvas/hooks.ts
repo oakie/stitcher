@@ -1,93 +1,35 @@
+import { Point, Size, Stitch } from '@shared/types';
+import { useBrushState, useStitchActions } from '@store';
+import CellUtils from '@utils/cell-utils';
 import Konva from 'konva';
-import { Stage } from 'konva/lib/Stage';
-import { Vector2d } from 'konva/lib/types';
 import React from 'react';
-import { Stitch, Point, Size } from '../shared/types';
-import { useStitchActions } from '../store';
-import { RootState, useAppSelector } from '../store/store';
-import { getCellsOnLine } from '../utils/cell-utils';
 import { DRAFT_LAYER } from './constants';
+import {
+  clearDraftLayer,
+  drawSquare,
+  getCenter,
+  getDistance,
+  getWorldPosition,
+  screenToWorld,
+} from './utils';
 
 const SCALE_FACTOR = 1.1;
 const MIN_SCALE = 5;
 const MAX_SCALE = 100;
 
 interface PointerState {
-  down: Vector2d | null;
-  prev: Vector2d | null;
+  down: Point | null;
+  prev: Point | null;
 }
 
 interface MultiTouchState {
-  center: Vector2d;
+  center: Point;
   distance: number;
 }
 
-const screenToWorld = (pos: Point, size: Size, scale: Point) => {
-  return {
-    x: (0.5 * size.width - pos.x) / scale.x,
-    y: (0.5 * size.height - pos.y) / scale.y,
-  };
-};
-
-const getWorldPosition = (
-  stage: Konva.Stage,
-  screenpos: Konva.Vector2d | null = null
-) => {
-  if (!screenpos) {
-    screenpos = stage.getPointerPosition();
-  }
-
-  const layer = stage.getLayers()[0];
-  const transform = layer.getAbsoluteTransform().copy();
-  transform.invert();
-  return transform.point(screenpos!);
-};
-
-const drawSquare = (
-  layer: Konva.Layer,
-  x: number,
-  y: number,
-  color: string
-) => {
-  const square = new Konva.Rect({
-    x,
-    y,
-    width: 1,
-    height: 1,
-    fill: color,
-  });
-  layer.add(square);
-  square.draw();
-  return square;
-};
-
-const clearDraftLayer = (stage: Konva.Stage) => {
-  const layer = stage.find('.' + DRAFT_LAYER)[0] as Konva.Layer;
-  layer.removeChildren();
-  layer.draw();
-};
-
-const getDistance = (p1: Point, p2: Point) => {
-  const dx = p2.x - p1.x;
-  const dy = p2.y - p1.y;
-  return Math.sqrt(dx * dx + dy * dy);
-};
-
-const getCenter = (p1: Point, p2: Point) => {
-  return {
-    x: 0.5 * (p1.x + p2.x),
-    y: 0.5 * (p1.y + p2.y),
-  };
-};
-
-const selector = (state: RootState) => ({
-  brush: state.brushes.byId[state.brushes.selectedId || -1],
-  stitches: state.stitches.byId,
-});
-
 export const useCanvasControls = (size: Size) => {
   const stitchActions = useStitchActions();
-  const state = useAppSelector(selector);
+  const { selected: brush } = useBrushState();
   const [scale, setScale] = React.useState<Point>({ x: 10, y: 10 });
   const [center, setCenter] = React.useState<Point>({ x: 0, y: 0 });
   const pointer = React.useRef<PointerState>({
@@ -95,7 +37,7 @@ export const useCanvasControls = (size: Size) => {
     prev: null,
   });
   const multitouch = React.useRef<MultiTouchState | null>(null);
-  const draft = React.useRef<Vector2d[]>([]);
+  const draft = React.useRef<Point[]>([]);
 
   const handleWheel = React.useCallback(
     (e: Konva.KonvaEventObject<WheelEvent>) => {
@@ -216,18 +158,18 @@ export const useCanvasControls = (size: Size) => {
   );
 
   const handlePointerUp = React.useCallback(
-    (stage: Stage) => {
+    (stage: Konva.Stage) => {
       pointer.current.down = null;
       pointer.current.prev = null;
 
-      if (state.brush) {
+      if (brush) {
         const stitches: Stitch[] = [];
         for (let c of draft.current) {
           stitches.push({
             x: c.x,
             y: c.y,
             id: `${c.x}:${c.y}`,
-            brush: state.brush.id,
+            brush: brush.id,
           });
         }
         stitchActions.update(stitches);
@@ -242,7 +184,7 @@ export const useCanvasControls = (size: Size) => {
       clearDraftLayer(stage);
       draft.current = [];
     },
-    [stitchActions, state.brush]
+    [stitchActions, brush]
   );
 
   const handleMouseUp = React.useCallback(
@@ -298,8 +240,8 @@ export const useCanvasControls = (size: Size) => {
 
       if (curr.x !== prev.x || curr.y !== prev.y) {
         const layer = stage.find('.' + DRAFT_LAYER)[0] as Konva.Layer;
-        const cells = getCellsOnLine(prev, curr);
-        const color = state.brush ? state.brush.color : '#fff';
+        const cells = CellUtils.getCellsOnLine(prev, curr);
+        const color = brush ? brush.color : '#fff';
 
         for (let c of cells) {
           draft.current.push(c);
@@ -309,7 +251,7 @@ export const useCanvasControls = (size: Size) => {
 
       pointer.current.prev = curr;
     },
-    [state.brush]
+    [brush]
   );
 
   const handleMouseMove = React.useCallback(

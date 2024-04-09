@@ -1,12 +1,12 @@
+import Icon from '@shared/icon';
+import { Brush, Symbol } from '@shared/types';
+import { useBrushActions, useBrushState } from '@store';
+import StringUtils from '@utils/string-utils';
 import React, { FC, ReactNode } from 'react';
 import { Button, ButtonGroup, Card } from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import ToggleButton from 'react-bootstrap/ToggleButton';
-import Icon from '../shared/icon';
-import { Brush, Symbol } from '../shared/types';
-import { useBrushActions, useBrushState } from '../store';
-import StringUtils from '../utils/string-utils';
 import BrushSymbol from './brush-symbol';
 import ColorPicker from './color-picker';
 import SymbolPicker from './symbol-picker';
@@ -110,20 +110,19 @@ const CurrentBrush: FC<CurrentBrushProps> = React.memo(({ brush }) => {
 
 const Palette = () => {
   const state = useBrushState();
-  const selectedBrush = state.selectedId ? state.byId[state.selectedId] : null;
   const brushActions = useBrushActions();
   const brushList = Object.values(state.byId);
 
   const handleSelectBrush = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      if (value === 'eraser' || value === state.selectedId) {
+      if (value === 'eraser') {
         brushActions.select(null);
       } else {
         brushActions.select(value);
       }
     },
-    [state.selectedId, brushActions]
+    [brushActions]
   );
 
   const handleCreateBrush = React.useCallback(
@@ -142,19 +141,19 @@ const Palette = () => {
     <>
       <Card bg="dark">
         <Card.Body className="d-flex p-1 gap-2">
-          <CurrentBrush brush={selectedBrush} />
+          <CurrentBrush brush={state.selected} />
 
           <ButtonGroup size="sm">
             <PaletteBrushButton
               brush={null}
-              checked={!selectedBrush}
+              checked={!state.selected}
               onChange={handleSelectBrush}
             />
             {brushList.map((brush) => (
               <PaletteBrushButton
                 key={brush.id}
                 brush={brush}
-                checked={state.selectedId === brush.id}
+                checked={state.selected?.id === brush.id}
                 onChange={handleSelectBrush}
               />
             ))}

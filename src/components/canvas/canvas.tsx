@@ -1,12 +1,11 @@
+import Cell from '@components/cell';
+import Grid from '@components/grid';
+import { Brush, Size, Stitch } from '@shared/types';
+import { useBrushState, useStitchState } from '@store';
 import React, { FC, RefCallback } from 'react';
 import { Layer, Stage } from 'react-konva';
-import { useSelector } from 'react-redux';
 import { styled } from 'styled-components';
-import Cell from '../cell';
-import StageGrid from '../grid';
-import { Brush, Size, Stitch } from '../shared/types';
-import { RootState } from '../store';
-import { useCanvasControls } from './canvas-controls';
+import { useCanvasControls } from './hooks';
 import { DRAFT_LAYER } from './constants';
 
 const CanvasContainer = styled.div`
@@ -14,16 +13,12 @@ const CanvasContainer = styled.div`
   height: 100%;
 `;
 
-const selector = (state: RootState) => {
-  return {
-    stitches: Object.values(state.stitches.byId),
-    brushes: state.brushes.byId,
-  };
-};
-
-const renderCells = (stitches: Stitch[], brushes: { [key: string]: Brush }) => {
+const renderCells = (
+  stitches: { [key: string]: Stitch },
+  brushes: { [key: string]: Brush }
+) => {
   const result: React.ReactElement[] = [];
-  for (let stitch of stitches) {
+  for (let stitch of Object.values(stitches)) {
     const brush = brushes[stitch.brush];
     result.push(
       <Cell
@@ -43,12 +38,13 @@ interface CanvasProps {
   size: Size;
 }
 
-export const Canvas: FC<CanvasProps> = ({ container, size }) => {
+const Canvas: FC<CanvasProps> = ({ container, size }) => {
   const { scale, center, handlers } = useCanvasControls(size);
-  const state = useSelector(selector);
+  const brushes = useBrushState();
+  const stitches = useStitchState();
   const cells = React.useMemo(
-    () => renderCells(state.stitches, state.brushes),
-    [state.stitches, state.brushes]
+    () => renderCells(stitches.byId, brushes.byId),
+    [stitches.byId, brushes]
   );
 
   return (
@@ -63,7 +59,7 @@ export const Canvas: FC<CanvasProps> = ({ container, size }) => {
         <Layer listening={false}>{cells}</Layer>
         <Layer listening={false} name={DRAFT_LAYER} />
         <Layer listening={false}>
-          <StageGrid scale={scale} size={size} center={center} />
+          <Grid scale={scale} size={size} center={center} />
         </Layer>
       </Stage>
     </CanvasContainer>

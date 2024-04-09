@@ -1,5 +1,5 @@
 import React from 'react';
-import { Brush } from '../../shared/types';
+import { Brush } from '@shared/types';
 import { slice } from '../slices/brush-slice';
 import { useAppDispatch, useAppSelector } from '../store';
 

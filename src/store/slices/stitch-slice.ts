@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Stitch } from '../../shared/types';
+import { Stitch } from '@shared/types';
 
 export interface StitchState {
   byId: {

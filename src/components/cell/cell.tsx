@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Group, Line } from 'react-konva';
-import { Symbol } from "../shared/types";
+import { Symbol } from "@shared/types";
 
 export interface CellShapeProps {
   color: string;

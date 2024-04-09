@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { Symbol } from '../shared/types';
-import Icon, { IconProps } from '../shared/icon';
+import { Symbol } from '@shared/types';
+import Icon, { IconProps } from '@shared/icon';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 const symbols = {

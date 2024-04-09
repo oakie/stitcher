@@ -1,12 +1,12 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Brush, Symbol } from '../../shared/types';
-import StringUtils from '../../utils/string-utils';
+import { Brush, Symbol } from '@shared/types';
+import StringUtils from '@utils/string-utils';
 
 export interface BrushState {
   byId: {
     [key: string]: Brush;
   };
-  selectedId: string | null;
+  selected: Brush | null;
 }
 
 const initial = (): BrushState => {
@@ -20,7 +20,7 @@ const initial = (): BrushState => {
     byId: {
       [cross.id]: cross,
     },
-    selectedId: cross.id,
+    selected: cross,
   };
 };
 
@@ -33,12 +33,18 @@ export const slice = createSlice({
     },
     update: (state, action: PayloadAction<Brush>) => {
       state.byId[action.payload.id] = action.payload;
+      if (state.selected?.id === action.payload.id) {
+        state.selected = action.payload;
+      }
     },
     remove: (state, action: PayloadAction<string>) => {
       delete state.byId[action.payload];
+      if (state.selected?.id === action.payload) {
+        state.selected = null;
+      }
     },
     select: (state, action: PayloadAction<string | null>) => {
-      state.selectedId = action.payload;
+      state.selected = action.payload ? state.byId[action.payload] : null;
     },
   },
 });

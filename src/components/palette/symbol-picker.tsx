@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
-import { Brush, Symbol } from '../shared/types';
-import { useBrushActions } from '../store';
+import { Brush, Symbol } from '@shared/types';
+import { useBrushActions } from '@store';
 import BrushSymbol from './brush-symbol';
 
 interface SymbolPickerProps {

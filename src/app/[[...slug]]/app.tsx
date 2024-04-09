@@ -1,12 +1,13 @@
+import Canvas from '@components/canvas';
+import Header from '@components/header';
+import Palette from '@components/palette';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { FC } from 'react';
+import { Provider } from 'react-redux';
 import { styled } from 'styled-components';
 import useResizeObserver from 'use-resize-observer';
-import Canvas from './canvas';
-import Header from './header';
-import Palette from './palette';
+import { store } from '@store';
 
 library.add(fas);
 
@@ -34,13 +35,15 @@ const App: FC = () => {
 
   return (
     <AppContainer className="overflow-hidden d-flex flex-column">
-      <Header />
-      <div className="flex-grow-1">
-        <Canvas container={ref} size={size} />
-      </div>
-      <BottomCenter>
-        <Palette />
-      </BottomCenter>
+      <Provider store={store}>
+        <Header />
+        <div className="flex-grow-1">
+          <Canvas container={ref} size={size} />
+        </div>
+        <BottomCenter>
+          <Palette />
+        </BottomCenter>
+      </Provider>
     </AppContainer>
   );
 };

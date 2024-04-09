@@ -1,7 +1,7 @@
-import { Vector2d } from 'konva/lib/types';
+import { Point } from '@shared/types';
 
-export const getCellsOnLine = (p1: Vector2d, p2: Vector2d) => {
-  const result: Vector2d[] = [];
+const getCellsOnLine = (p1: Point, p2: Point) => {
+  const result: Point[] = [];
 
   let x0 = p1.x;
   let y0 = p1.y;
@@ -34,3 +34,6 @@ export const getCellsOnLine = (p1: Vector2d, p2: Vector2d) => {
 
   return result;
 };
+
+const CellUtils = { getCellsOnLine };
+export default CellUtils;

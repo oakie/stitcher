@@ -1,9 +1,9 @@
 import React from 'react';
-import { Stitch } from '../../shared/types';
+import { Stitch } from '@shared/types';
 import { slice } from '../slices/stitch-slice';
 import { useAppDispatch, useAppSelector } from '../store';
 
-export const useStitchState = () => useAppSelector((state) => state.brushes);
+export const useStitchState = () => useAppSelector((state) => state.stitches);
 
 export const useStitchActions = () => {
   const dispatch = useAppDispatch();

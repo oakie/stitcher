@@ -1,16 +1,11 @@
+import { Point, Size } from '@shared/types';
+import MathUtils from '@utils/math-utils';
 import React from 'react';
-import { Point, Size } from '../shared/types';
-import { GridBreakpoints } from './types';
 
-const lerp = (vmin: number, vmax: number, step: number) => {
-  const first = Math.floor(vmin / step) * step;
-  const last = Math.floor(vmax / step) * step;
-  const tmp: number[] = [];
-  for (var v = first; v <= last; v += step) {
-    tmp.push(v);
-  }
-  return tmp;
-};
+interface GridBreakpoints {
+  x: number[];
+  y: number[];
+}
 
 export const useGridBreakpoints = (scale: Point, size: Size, center: Point) => {
   const [grid, setGrid] = React.useState<GridBreakpoints>({ x: [], y: [] });
@@ -23,7 +18,10 @@ export const useGridBreakpoints = (scale: Point, size: Size, center: Point) => {
 
     const step = 1;
 
-    setGrid({ x: lerp(xmin, xmax, step), y: lerp(ymin, ymax, step) });
+    setGrid({
+      x: MathUtils.lerp(xmin, xmax, step),
+      y: MathUtils.lerp(ymin, ymax, step),
+    });
   }, [scale, size, center]);
 
   return grid;

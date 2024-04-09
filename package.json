@@ -7,27 +7,27 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@reduxjs/toolkit": "^2.2.3",
-    "@types/node": "^20.12.5",
-    "@types/react": "^18.2.74",
+    "@types/node": "^20.12.6",
+    "@types/react": "^18.2.75",
     "@types/react-color": "^3.0.12",
     "@types/react-dom": "^18.2.24",
     "bootstrap": "^5.3.3",
     "konva": "^9.3.6",
+    "next": "^14.1.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-konva": "^18.2.10",
-    "react-scripts": "^5.0.1",
+    "react-redux": "^9.1.0",
     "styled-components": "^6.1.8",
     "typescript": "^5.4.4",
     "use-resize-observer": "^9.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "browserslist": {
     "production": [
