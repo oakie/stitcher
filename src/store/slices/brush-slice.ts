@@ -1,26 +1,11 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Brush, Symbol } from '@shared/types';
-import StringUtils from '@utils/string-utils';
-
-export interface BrushState {
-  byId: {
-    [key: string]: Brush;
-  };
-  selected: Brush | null;
-}
+import { Brush } from '@shared/types';
+import { BrushState } from '../types';
 
 const initial = (): BrushState => {
-  const cross = {
-    id: StringUtils.random(5),
-    symbol: Symbol.CROSS,
-    color: '#000',
-  } as Brush;
-
   return {
-    byId: {
-      [cross.id]: cross,
-    },
-    selected: cross,
+    byId: {},
+    selected: null,
   };
 };
 
@@ -28,19 +13,14 @@ export const slice = createSlice({
   name: 'brushes',
   initialState: initial(),
   reducers: {
-    create: (state, action: PayloadAction<Brush>) => {
-      state.byId[action.payload.id] = action.payload;
-    },
-    update: (state, action: PayloadAction<Brush>) => {
-      state.byId[action.payload.id] = action.payload;
-      if (state.selected?.id === action.payload.id) {
-        state.selected = action.payload;
-      }
-    },
-    remove: (state, action: PayloadAction<string>) => {
-      delete state.byId[action.payload];
-      if (state.selected?.id === action.payload) {
-        state.selected = null;
+    load: (state, action: PayloadAction<{ [key: string]: Brush } | null>) => {
+      const empty = Object.keys(state.byId).length === 0;
+      state.byId = action.payload ?? {};
+      if (state.selected) {
+        state.selected = state.byId[state.selected.id] ?? null;
+      } else if (empty) {
+        const brushes = Object.values(state.byId);
+        state.selected = brushes[0];
       }
     },
     select: (state, action: PayloadAction<string | null>) => {

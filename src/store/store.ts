@@ -1,17 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { useDispatch, useSelector } from 'react-redux';
+import auth from './slices/auth-slice';
 import brushes from './slices/brush-slice';
+import dialogs from './slices/dialog-slice';
+import profile from './slices/profile-slice';
 import stitches from './slices/stitch-slice';
+import workspaces from './slices/workspace-slice';
 
 export const store = configureStore({
   reducer: {
+    auth,
+    profile,
+    workspaces,
     brushes,
     stitches,
+    dialogs,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
-type AppDispatch = typeof store.dispatch;
-
-export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
-export const useAppSelector = useSelector.withTypes<RootState>();

@@ -14,7 +14,7 @@ const getCellsOnLine = (p1: Point, p2: Point) => {
   const sy = y0 < y1 ? 1 : -1;
 
   let err = dx - dy;
-  while (true) {
+  while (true) { // eslint-disable-line no-constant-condition
     result.push({ x: x0, y: y0 });
 
     if (Math.abs(x0 - x1) < 0.0001 && Math.abs(y0 - y1) < 0.0001) {

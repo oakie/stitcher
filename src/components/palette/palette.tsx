@@ -1,5 +1,5 @@
 import Icon from '@shared/icon';
-import { Brush, Symbol } from '@shared/types';
+import { Brush, Shape } from '@shared/types';
 import { useBrushActions, useBrushState } from '@store';
 import StringUtils from '@utils/string-utils';
 import React, { FC, ReactNode } from 'react';
@@ -7,9 +7,9 @@ import { Button, ButtonGroup, Card } from 'react-bootstrap';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import ToggleButton from 'react-bootstrap/ToggleButton';
-import BrushSymbol from './brush-symbol';
+import BrushShape from './brush-shape';
 import ColorPicker from './color-picker';
-import SymbolPicker from './symbol-picker';
+import ShapePicker from './shape-picker';
 
 interface PaletteBrushButtonProps {
   brush: Brush | null;
@@ -17,39 +17,23 @@ interface PaletteBrushButtonProps {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-const PaletteBrushButton: FC<PaletteBrushButtonProps> = React.memo(
-  ({ brush, ...props }) => {
-    if (!brush) {
-      return (
-        <ToggleButton
-          variant="outline-secondary"
-          type="radio"
-          name="palette-brush"
-          id={`palette-brush-eraser`}
-          value="eraser"
-          {...props}
-        >
-          <Icon icon="eraser" />
-        </ToggleButton>
-      );
-    }
-
+const PaletteBrushButton: FC<PaletteBrushButtonProps> = React.memo(({ brush, ...props }) => {
+  if (!brush) {
     return (
-      <ToggleButton
-        variant="outline-secondary"
-        type="radio"
-        name="palette-brush"
-        id={`palette-brush-${brush.id}`}
-        value={brush.id}
-        {...props}
-      >
-        <span style={{ color: brush.color }}>
-          <BrushSymbol symbol={brush.symbol} />
-        </span>
+      <ToggleButton variant="outline-secondary" type="radio" name="palette-brush" id={`palette-brush-eraser`} value="eraser" {...props}>
+        <Icon icon="eraser" />
       </ToggleButton>
     );
   }
-);
+
+  return (
+    <ToggleButton variant="outline-secondary" type="radio" name="palette-brush" id={`palette-brush-${brush.id}`} value={brush.id} {...props}>
+      <span style={{ color: brush.color }}>
+        <BrushShape shape={brush.shape} />
+      </span>
+    </ToggleButton>
+  );
+});
 
 interface PopoverButtonProps {
   header: ReactNode;
@@ -57,29 +41,27 @@ interface PopoverButtonProps {
   children: ReactNode;
 }
 
-const PopoverButton: FC<PopoverButtonProps> = React.memo(
-  ({ header, content, children }) => {
-    return (
-      <OverlayTrigger
-        trigger="click"
-        placement="auto"
-        rootClose
-        overlay={
-          <Popover>
-            <Popover.Header>
-              <strong>{header}</strong>
-            </Popover.Header>
-            <Popover.Body>{content}</Popover.Body>
-          </Popover>
-        }
-      >
-        <Button variant="outline-secondary" size="sm">
-          <>{children}</>
-        </Button>
-      </OverlayTrigger>
-    );
-  }
-);
+const PopoverButton: FC<PopoverButtonProps> = React.memo(({ header, content, children }) => {
+  return (
+    <OverlayTrigger
+      trigger="click"
+      placement="auto"
+      rootClose
+      overlay={
+        <Popover>
+          <Popover.Header>
+            <strong>{header}</strong>
+          </Popover.Header>
+          <Popover.Body>{content}</Popover.Body>
+        </Popover>
+      }
+    >
+      <Button variant="outline-secondary" size="sm">
+        <>{children}</>
+      </Button>
+    </OverlayTrigger>
+  );
+});
 
 interface CurrentBrushProps {
   brush: Brush | null;
@@ -92,17 +74,11 @@ const CurrentBrush: FC<CurrentBrushProps> = React.memo(({ brush }) => {
 
   return (
     <ButtonGroup className="mr-5">
-      <PopoverButton
-        header="Select brush color"
-        content={<ColorPicker brush={brush} />}
-      >
+      <PopoverButton header="Select color" content={<ColorPicker brush={brush} />}>
         <Icon icon="palette" color={brush.color} />
       </PopoverButton>
-      <PopoverButton
-        header="Select brush symbol"
-        content={<SymbolPicker brush={brush} />}
-      >
-        <BrushSymbol symbol={brush.symbol} />
+      <PopoverButton header="Select shape" content={<ShapePicker brush={brush} />}>
+        <BrushShape shape={brush.shape} />
       </PopoverButton>
     </ButtonGroup>
   );
@@ -125,46 +101,29 @@ const Palette = () => {
     [brushActions]
   );
 
-  const handleCreateBrush = React.useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      const brush = {
-        id: StringUtils.random(5),
-        symbol: Symbol.CROSS,
-        color: '#000',
-      };
-      brushActions.create(brush);
-    },
-    [brushActions]
-  );
+  const handleCreateBrush = React.useCallback(() => {
+    const brush = {
+      id: StringUtils.random(5),
+      shape: Shape.CROSS,
+      color: '#000',
+    };
+    brushActions.create(brush);
+  }, [brushActions]);
 
   return (
     <>
-      <Card bg="dark">
+      <Card>
         <Card.Body className="d-flex p-1 gap-2">
           <CurrentBrush brush={state.selected} />
 
           <ButtonGroup size="sm">
-            <PaletteBrushButton
-              brush={null}
-              checked={!state.selected}
-              onChange={handleSelectBrush}
-            />
+            <PaletteBrushButton brush={null} checked={!state.selected} onChange={handleSelectBrush} />
             {brushList.map((brush) => (
-              <PaletteBrushButton
-                key={brush.id}
-                brush={brush}
-                checked={state.selected?.id === brush.id}
-                onChange={handleSelectBrush}
-              />
+              <PaletteBrushButton key={brush.id} brush={brush} checked={state.selected?.id === brush.id} onChange={handleSelectBrush} />
             ))}
           </ButtonGroup>
 
-          <Button
-            variant="outline-secondary"
-            onClick={handleCreateBrush}
-            size="sm"
-            className="ml-3"
-          >
+          <Button variant="outline-secondary" onClick={handleCreateBrush} size="sm" className="ml-3">
             <Icon icon="plus" />
           </Button>
         </Card.Body>
