@@ -3,8 +3,7 @@ import { AuthState, User } from '../types';
 
 const initial = (): AuthState => {
   return {
-    username: null,
-    fullname: null,
+    user: null,
     loading: true,
   };
 };
@@ -17,11 +16,10 @@ export const slice = createSlice({
       state.loading = action.payload;
     },
     signin: (state, action: PayloadAction<User>) => {
-      state.username = action.payload.email;
-      state.fullname = action.payload.name;
+      state.user = action.payload;
       state.loading = false;
     },
-    signout: (_) => ({ ...initial(), loading: false }),
+    signout: () => ({ ...initial(), loading: false }),
   },
 });
 

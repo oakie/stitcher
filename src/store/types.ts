@@ -1,14 +1,26 @@
-import { Brush, Stitch } from '@shared/types';
+import { Brush, Profile, Stitch, Workspace } from '@shared/types';
+import { ReactNode } from 'react';
+
+export interface WorkspaceState {
+  active: Workspace | null;
+  byId: {
+    [key: string]: Workspace;
+  };
+}
+
+export interface ProfileState {
+  profile: Profile | null;
+}
 
 export interface AuthState {
-  username: string | null;
-  fullname: string | null;
+  user: User | null;
   loading: boolean;
 }
 
 export interface User {
-  email: string | null;
-  name: string | null;
+  userid: string;
+  email: string;
+  name: string;
 }
 
 export interface StitchState {
@@ -22,4 +34,16 @@ export interface BrushState {
     [key: string]: Brush;
   };
   selected: Brush | null;
+}
+
+export interface DialogContext<TResult> {
+  id: string;
+  component: ReactNode;
+  promise: Promise<TResult>;
+  resolve: (value: TResult | PromiseLike<TResult>) => void;
+  reject: (reason?: any) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
+}
+
+export interface DialogState {
+  stack: DialogContext<any>[]; // eslint-disable-line @typescript-eslint/no-explicit-any
 }

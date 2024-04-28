@@ -9,7 +9,7 @@ interface AuthGuardProps {
 const AuthGuard: FC<AuthGuardProps> = ({ children }) => {
   const auth = useAuthState();
 
-  if (!auth.username) {
+  if (!auth.user) {
     return <SignIn loading={auth.loading} />;
   }
 

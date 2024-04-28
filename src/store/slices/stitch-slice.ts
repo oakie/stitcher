@@ -12,32 +12,20 @@ export const slice = createSlice({
   name: 'stitches',
   initialState: initial(),
   reducers: {
-    create: (state, action: PayloadAction<Stitch | Stitch[]>) => {
-      if (Array.isArray(action.payload)) {
-        for (let c of action.payload) {
-          state.byId[c.id] = c;
-        }
-      } else {
-        state.byId[action.payload.id] = action.payload;
-      }
+    create: (state, action: PayloadAction<Stitch[]>) => {
+      action.payload.forEach((x) => (state.byId[x.id] = x));
     },
-    update: (state, action: PayloadAction<Stitch | Stitch[]>) => {
-      if (Array.isArray(action.payload)) {
-        for (let c of action.payload) {
-          state.byId[c.id] = c;
-        }
-      } else {
-        state.byId[action.payload.id] = action.payload;
-      }
+    update: (state, action: PayloadAction<Stitch[]>) => {
+      action.payload.forEach((x) => (state.byId[x.id] = x));
     },
-    remove: (state, action: PayloadAction<string | string[]>) => {
-      if (Array.isArray(action.payload)) {
-        for (let c of action.payload) {
-          delete state.byId[c];
-        }
-      } else {
-        delete state.byId[action.payload];
-      }
+    remove: (state, action: PayloadAction<string[]>) => {
+      action.payload.forEach((x) => delete state.byId[x]);
+    },
+    load: (state, action: PayloadAction<{ [key: string]: Stitch } | null>) => {
+      return {
+        ...state,
+        byId: action.payload ?? {},
+      };
     },
   },
 });

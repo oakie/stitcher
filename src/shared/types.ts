@@ -8,9 +8,24 @@ export interface Size {
   height: number;
 }
 
+export interface Profile {
+  id: string;
+  name: string;
+  active: string | null;
+  workspaces: string[] | null;
+}
+
+export interface Workspace {
+  id: string;
+  name: string;
+  owners: string[];
+  created: Date;
+  updated: Date;
+}
+
 export interface Brush {
   id: string;
-  symbol: Symbol;
+  shape: Shape;
   color: string;
 }
 
@@ -21,7 +36,7 @@ export interface Stitch {
   brush: string;
 }
 
-export enum Symbol {
+export enum Shape {
   CROSS = 'cross',
   SQUARE = 'square',
 }

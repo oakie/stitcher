@@ -18,14 +18,14 @@ const renderCells = (
   brushes: { [key: string]: Brush }
 ) => {
   const result: React.ReactElement[] = [];
-  for (let stitch of Object.values(stitches)) {
+  for (const stitch of Object.values(stitches)) {
     const brush = brushes[stitch.brush];
     result.push(
       <Cell
         key={stitch.id}
         x={stitch.x}
         y={stitch.y}
-        symbol={brush.symbol}
+        shape={brush.shape}
         color={brush.color}
       />
     );

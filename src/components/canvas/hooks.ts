@@ -4,14 +4,7 @@ import CellUtils from '@utils/cell-utils';
 import Konva from 'konva';
 import React from 'react';
 import { DRAFT_LAYER } from './constants';
-import {
-  clearDraftLayer,
-  drawSquare,
-  getCenter,
-  getDistance,
-  getWorldPosition,
-  screenToWorld,
-} from './utils';
+import { clearDraftLayer, drawSquare, getCenter, getDistance, getWorldPosition, screenToWorld } from './utils';
 
 const SCALE_FACTOR = 1.1;
 const MIN_SCALE = 5;
@@ -48,10 +41,7 @@ export const useCanvasControls = (size: Size) => {
 
       const oldScale = stage.scaleX();
 
-      var factor =
-        Math.sign(e.evt.deltaY) < 0
-          ? oldScale * SCALE_FACTOR
-          : oldScale / SCALE_FACTOR;
+      let factor = Math.sign(e.evt.deltaY) < 0 ? oldScale * SCALE_FACTOR : oldScale / SCALE_FACTOR;
       factor = Math.max(MIN_SCALE, Math.min(MAX_SCALE, factor));
 
       const pointer = stage.getPointerPosition();
@@ -74,42 +64,32 @@ export const useCanvasControls = (size: Size) => {
     [size]
   );
 
-  const handleTouchZoomOrPan = React.useCallback(
-    (stage: Konva.Stage, p1: Point, p2: Point) => {
-      const currCenter = getCenter(p1, p2);
-      const currDistance = getDistance(p1, p2);
+  const handleTouchZoomOrPan = React.useCallback((stage: Konva.Stage, p1: Point, p2: Point) => {
+    const currCenter = getCenter(p1, p2);
+    const currDistance = getDistance(p1, p2);
 
-      const prevCenter = multitouch.current
-        ? multitouch.current.center
-        : currCenter;
-      const prevDistance = multitouch.current
-        ? multitouch.current.distance
-        : currDistance;
+    const prevCenter = multitouch.current ? multitouch.current.center : currCenter;
+    const prevDistance = multitouch.current ? multitouch.current.distance : currDistance;
 
-      const oldScale = stage.scaleX();
-      const factor = currDistance / prevDistance;
-      const newScale = Math.min(
-        Math.max(MIN_SCALE, oldScale * factor),
-        MAX_SCALE
-      );
+    const oldScale = stage.scaleX();
+    const factor = currDistance / prevDistance;
+    const newScale = Math.min(Math.max(MIN_SCALE, oldScale * factor), MAX_SCALE);
 
-      const dx = (currCenter.x - prevCenter.x) / oldScale;
-      const dy = (currCenter.y - prevCenter.y) / oldScale;
+    const dx = (currCenter.x - prevCenter.x) / oldScale;
+    const dy = (currCenter.y - prevCenter.y) / oldScale;
 
-      stage.scale({ x: newScale, y: newScale });
-      stage.position({
-        x: stage.x() + dx * newScale,
-        y: stage.y() + dy * newScale,
-      });
-      stage.batchDraw();
+    stage.scale({ x: newScale, y: newScale });
+    stage.position({
+      x: stage.x() + dx * newScale,
+      y: stage.y() + dy * newScale,
+    });
+    stage.batchDraw();
 
-      // setScale({ x: newScale, y: newScale });
-      // setCenter((center) => ({ x: center.x + dx, y: center.y + dy }));
+    // setScale({ x: newScale, y: newScale });
+    // setCenter((center) => ({ x: center.x + dx, y: center.y + dy }));
 
-      multitouch.current = { center: currCenter, distance: prevDistance };
-    },
-    []
-  );
+    multitouch.current = { center: currCenter, distance: prevDistance };
+  }, []);
 
   const handlePointerDown = React.useCallback((pos: Point) => {
     const cell = { x: Math.floor(pos.x), y: Math.floor(pos.y) };
@@ -164,7 +144,7 @@ export const useCanvasControls = (size: Size) => {
 
       if (brush) {
         const stitches: Stitch[] = [];
-        for (let c of draft.current) {
+        for (const c of draft.current) {
           stitches.push({
             x: c.x,
             y: c.y,
@@ -175,7 +155,7 @@ export const useCanvasControls = (size: Size) => {
         stitchActions.update(stitches);
       } else {
         const ids: string[] = [];
-        for (let c of draft.current) {
+        for (const c of draft.current) {
           ids.push(`${c.x}:${c.y}`);
         }
         stitchActions.remove(ids);
@@ -243,7 +223,7 @@ export const useCanvasControls = (size: Size) => {
         const cells = CellUtils.getCellsOnLine(prev, curr);
         const color = brush ? brush.color : '#fff';
 
-        for (let c of cells) {
+        for (const c of cells) {
           draft.current.push(c);
           drawSquare(layer, c.x, c.y, color);
         }
@@ -304,20 +284,17 @@ export const useCanvasControls = (size: Size) => {
     [handlePointerMove, handleTouchZoomOrPan]
   );
 
-  const handleDragStart = React.useCallback(
-    (e: Konva.KonvaEventObject<DragEvent>) => {
-      if (e.evt) {
-        e.evt.preventDefault();
+  const handleDragStart = React.useCallback((e: Konva.KonvaEventObject<DragEvent>) => {
+    if (e.evt) {
+      e.evt.preventDefault();
 
-        const stage = e.target.getStage();
-        if (!stage) return;
+      const stage = e.target.getStage();
+      if (!stage) return;
 
-        clearDraftLayer(stage);
-        draft.current = [];
-      }
-    },
-    []
-  );
+      clearDraftLayer(stage);
+      draft.current = [];
+    }
+  }, []);
 
   const handleDragEnd = React.useCallback(
     (e: Konva.KonvaEventObject<DragEvent>) => {
@@ -330,14 +307,11 @@ export const useCanvasControls = (size: Size) => {
     [size, scale]
   );
 
-  const handleContextMenu = React.useCallback(
-    (e: Konva.KonvaEventObject<PointerEvent>) => {
-      if (e.evt) {
-        e.evt.preventDefault();
-      }
-    },
-    []
-  );
+  const handleContextMenu = React.useCallback((e: Konva.KonvaEventObject<PointerEvent>) => {
+    if (e.evt) {
+      e.evt.preventDefault();
+    }
+  }, []);
 
   const handlers = React.useMemo(
     () => ({
@@ -366,10 +340,7 @@ export const useCanvasControls = (size: Size) => {
     ]
   );
 
-  const controls = React.useMemo(
-    () => ({ scale, center, handlers }),
-    [scale, center, handlers]
-  );
+  const controls = React.useMemo(() => ({ scale, center, handlers }), [scale, center, handlers]);
 
   return controls;
 };

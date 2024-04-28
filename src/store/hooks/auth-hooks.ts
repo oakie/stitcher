@@ -1,13 +1,8 @@
-import { auth } from '@store';
-import {
-  AuthProvider,
-  onAuthStateChanged,
-  signInWithPopup,
-  signOut,
-} from 'firebase/auth';
+import { AuthProvider, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 import React from 'react';
+import { auth } from '../firebase/setup';
 import { slice } from '../slices/auth-slice';
-import { useAppDispatch, useAppSelector } from '../store';
+import { useAppDispatch, useAppSelector } from './store-hooks';
 
 export const useAuthState = () => {
   const dispatch = useAppDispatch();
@@ -15,9 +10,7 @@ export const useAuthState = () => {
   React.useEffect(() => {
     return onAuthStateChanged(auth, (user) => {
       if (user) {
-        dispatch(
-          slice.actions.signin({ email: user.email, name: user.displayName })
-        );
+        dispatch(slice.actions.signin({ userid: user.uid, email: user.email ?? '', name: user.displayName ?? '' }));
       } else {
         dispatch(slice.actions.signout());
       }
@@ -32,13 +25,11 @@ export const useAuthActions = () => {
 
   const signin = async (provider: AuthProvider) => {
     dispatch(slice.actions.loading(true));
-    const result = await signInWithPopup(auth, provider);
-    console.log(result);
+    await signInWithPopup(auth, provider);
   };
 
   const signout = async () => {
-    const result = await signOut(auth);
-    console.log(result);
+    await signOut(auth);
   };
 
   return { signin, signout };

@@ -1,14 +1,15 @@
-import { AuthGuard } from '@components/auth';
 import Canvas from '@components/canvas';
+import { DialogHost } from '@components/dialogs';
 import Header from '@components/header';
 import { Menu } from '@components/menu';
 import Palette from '@components/palette';
+import { WorkspaceGuard } from '@components/workspace';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { fas } from '@fortawesome/free-solid-svg-icons';
-import { store } from '@store';
+import { StoreProvider } from '@store';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { FC } from 'react';
-import { Provider } from 'react-redux';
 import { styled } from 'styled-components';
 import useResizeObserver from 'use-resize-observer';
 
@@ -39,19 +40,20 @@ const App: FC = () => {
   const [showMenu, setShowMenu] = React.useState(false);
 
   return (
-    <AppContainer className="overflow-hidden d-flex flex-column bg-dark">
-      <Provider store={store}>
-        <AuthGuard>
-          <Header openMenu={() => setShowMenu(true)} />
+    <AppContainer className="overflow-hidden d-flex flex-column">
+      <StoreProvider>
+        <Header openMenu={() => setShowMenu(true)} />
+        <WorkspaceGuard>
           <div className="flex-grow-1">
             <Canvas container={ref} size={size} />
           </div>
           <BottomCenter>
             <Palette />
           </BottomCenter>
-          <Menu show={showMenu} onHide={() => setShowMenu(false)} />
-        </AuthGuard>
-      </Provider>
+        </WorkspaceGuard>
+        <Menu show={showMenu} onHide={() => setShowMenu(false)} />
+        <DialogHost />
+      </StoreProvider>
     </AppContainer>
   );
 };

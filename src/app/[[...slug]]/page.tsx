@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { ClientOnly } from './client';
 
 export const generateStaticParams = () => [{ slug: [''] }];
