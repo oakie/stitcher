@@ -10,6 +10,7 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,3 +32,29 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: ./out
+
+  beta:
+    name: Beta deployment
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: ${{ github.repository_owner }}
+          minimum-approvals: 1
+          issue-title: "Deploying v${{ github.run_id }} to prod from staging"
+          issue-body: "Please approve or deny the deployment of version v${{ github.run_id }}."
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          path: ./out
+
+      - name: Deploy stitcher beta
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STITCHER_BETA }}
+          projectId: stitcher-beta
+          channelId: live

@@ -7,6 +7,7 @@ import { slice } from '../slices/workspace-slice';
 import { useAuthState } from './auth-hooks';
 import { useDocumentListener, useOwnedCollectionListener } from './firebase-hooks';
 import { useAppDispatch, useAppSelector } from './store-hooks';
+import { colors } from '@shared/constants';
 
 export const useWorkspaceState = () => useAppSelector((state) => state.workspaces);
 
@@ -33,7 +34,7 @@ export const useWorkspaceActions = () => {
       const brush = {
         id: StringUtils.random(5),
         shape: Shape.CROSS,
-        color: '#0f0',
+        color: colors[0],
       };
       transaction.set(doc(database, 'brushes', workspace.id), { [brush.id]: brush });
       transaction.set(doc(database, 'profiles', userid), { active: workspace.id }, { merge: true });
