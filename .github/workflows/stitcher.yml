@@ -63,12 +63,14 @@ jobs:
       - name: Build site
         run: npm run build:beta
 
-      - name: Deploy to stitcher-beta
-        uses: w9jds/firebase-action@v13.7.5
+      - name: Setup firebase CLI
+        uses: w9jds/setup-firebase@main
         with:
-          args: deploy --project=stitcher-beta --only hosting,firestore
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STITCHER_BETA }}
+          tools-version: 13.8.0
+          firebase_token: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STITCHER_BETA }}
+
+      - name: Deploy to stitcher-beta
+        run: firebase deploy --project=stitcher-beta --only hosting,firestore
 
   prod:
     name: Build & deploy prod
@@ -101,9 +103,11 @@ jobs:
       - name: Build site
         run: npm run build:prod
 
-      - name: Deploy to stitcher-prod
-        uses: w9jds/firebase-action@v13.7.5
+      - name: Setup firebase CLI
+        uses: w9jds/setup-firebase@main
         with:
-          args: deploy --project=stitcher-prod-d457e --only hosting,firestore
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STITCHER_PROD_D457E }}
+          tools-version: 13.8.0
+          firebase_token: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STITCHER_PROD_D457E }}
+
+      - name: Deploy to stitcher-prod
+        run: firebase deploy --project=stitcher-prod --only hosting,firestore
