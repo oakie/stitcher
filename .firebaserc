@@ -2,7 +2,8 @@
   "projects": {
     "default": "stitcher-dev-caecd",
     "dev": "stitcher-dev-caecd",
-    "beta": "stitcher-beta"
+    "beta": "stitcher-beta",
+    "prod": "stitcher-prod-d457e"
   },
   "targets": {},
   "etags": {}
