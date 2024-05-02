@@ -66,10 +66,9 @@ jobs:
       - name: Deploy to stitcher-beta
         uses: w9jds/firebase-action@v13.7.5
         with:
-          args: deploy --only hosting,firestore
+          args: deploy --project=stitcher-beta --only hosting,firestore
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STITCHER_BETA }}
-          PROJECT_ID: stitcher-beta
 
   prod:
     name: Build & deploy prod
@@ -105,7 +104,6 @@ jobs:
       - name: Deploy to stitcher-prod
         uses: w9jds/firebase-action@v13.7.5
         with:
-          args: deploy --only hosting,firestore
+          args: deploy --project=stitcher-prod-d457e --only hosting,firestore
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STITCHER_PROD_D457E }}
-          PROJECT_ID: stitcher-prod-d457e
