@@ -9,33 +9,32 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # build:
+  #   name: Build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: npm
+  #     - name: Setup Node
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "20"
+  #         cache: npm
       
-      - name: Install dependencies
-        run: npm ci
+  #     - name: Install dependencies
+  #       run: npm ci
       
-      - name: Build site
-        run: npm run build
+  #     - name: Build site
+  #       run: npm run build:dev
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          path: ./out
+  #     - name: Upload artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         path: ./out
 
   beta:
-    name: Beta deployment
-    needs: build
+    name: Build & deploy beta
     runs-on: ubuntu-latest
     steps:
       - uses: trstringer/manual-approval@v1
@@ -46,10 +45,20 @@ jobs:
           issue-title: "Deploying v${{ github.run_id }} to prod from staging"
           issue-body: "Please approve or deny the deployment of version v${{ github.run_id }}."
 
-      - name: Download artifact
-        uses: actions/download-artifact@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+  
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          path: ./out
+          node-version: "20"
+          cache: npm
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build site
+        run: npm run build:beta
 
       - name: Deploy stitcher beta
         uses: FirebaseExtended/action-hosting-deploy@v0
