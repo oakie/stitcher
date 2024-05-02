@@ -69,8 +69,11 @@ jobs:
           tools-version: 13.8.0
           firebase_token: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STITCHER_BETA }}
 
+      - name: Use stitcher-beta
+        run: firebase use beta
+
       - name: Deploy to stitcher-beta
-        run: firebase deploy --project=stitcher-beta --only hosting,firestore
+        run: firebase deploy --only hosting,firestore
 
   prod:
     name: Build & deploy prod
@@ -109,5 +112,8 @@ jobs:
           tools-version: 13.8.0
           firebase_token: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_STITCHER_PROD_D457E }}
 
+      - name: Use stitcher-prod
+        run: firebase use prod
+
       - name: Deploy to stitcher-prod
-        run: firebase deploy --project=stitcher-prod --only hosting,firestore
+        run: firebase deploy --only hosting,firestore
