@@ -21,10 +21,10 @@ jobs:
   #       with:
   #         node-version: "20"
   #         cache: npm
-      
+
   #     - name: Install dependencies
   #       run: npm ci
-      
+
   #     - name: Build site
   #       run: npm run build:dev
 
@@ -36,7 +36,8 @@ jobs:
   beta:
     name: Build & deploy beta
     runs-on: ubuntu-latest
-    permissions: 
+    permissions:
+      contents: read
       issues: write
     steps:
       - uses: trstringer/manual-approval@v1
@@ -44,21 +45,21 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: ${{ github.repository_owner }}
           minimum-approvals: 1
-          issue-title: "Deploying v${{ github.run_id }} to prod from staging"
-          issue-body: "Please approve or deny the deployment of version v${{ github.run_id }}."
+          issue-title: 'Deploying v${{ github.run_id }} to prod from staging'
+          issue-body: 'Please approve or deny the deployment of version v${{ github.run_id }}.'
 
       - name: Checkout
         uses: actions/checkout@v4
-  
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
           cache: npm
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Build site
         run: npm run build:beta
 
