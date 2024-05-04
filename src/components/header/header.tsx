@@ -1,3 +1,4 @@
+import { environment } from '@shared/constants';
 import favicon from '@shared/favicon.svg';
 import Icon from '@shared/icon';
 import { useWorkspaces } from '@store';
@@ -5,8 +6,6 @@ import Image from 'next/image';
 import { FC } from 'react';
 import { Button, Navbar } from 'react-bootstrap';
 import styled from 'styled-components';
-
-const environment = `${process.env.NEXT_PUBLIC_ENVIRONMENT}`;
 
 const NavbarRight = styled.div`
   margin-left: auto;
