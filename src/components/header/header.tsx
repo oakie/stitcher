@@ -23,7 +23,7 @@ const Header: FC<HeaderProps> = ({ openMenu }) => {
       <Navbar.Brand href="#" className="d-flex align-items-center" onClick={() => workspaces.actions.select(null)}>
         <Image src={favicon} alt={'stitcher'} height={32} />
         stitcher
-        {environment !== 'production' && ` [${environment}]`}
+        {environment !== 'prod' && ` [${environment}]`}
       </Navbar.Brand>
       <NavbarRight>
         <Button variant="link" onClick={openMenu}>
