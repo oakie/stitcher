@@ -1,4 +1,5 @@
 import { WorkspaceCard, useWorkspaceRemoveDialog, useWorkspaceRenameDialog } from '@components/workspace';
+import { appversion } from '@shared/constants';
 import { useAuthActions, useAuthState, useWorkspaces } from '@store';
 import { FC } from 'react';
 import { Button, Offcanvas } from 'react-bootstrap';
@@ -49,6 +50,7 @@ const Menu: FC<MenuProps> = ({ show, onHide }) => {
         )}
 
         <Bottom className="d-flex flex-column mt-auto">
+          app version: {appversion}
           <Button variant="link-secondary" onClick={authactions.signout} className="align-self-end">
             sign out
           </Button>
