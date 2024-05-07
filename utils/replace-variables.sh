@@ -9,6 +9,10 @@ done < ".env"
 # Load environment-specific variables
 source ".env.$1"
 
+for VAR in "${VARIABLES[@]}"; do
+    echo "$VAR = ${!VAR}"
+done
+
 # Find and replace PLACEHOLDER_ values with real values
 find ./out -type f -name "*.js" |
 while read file; do

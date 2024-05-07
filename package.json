@@ -8,7 +8,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@reduxjs/toolkit": "^2.2.3",
-    "@types/node": "^20.12.8",
+    "@types/node": "^20.12.10",
     "@types/react": "^18.3.1",
     "@types/react-color": "^3.0.12",
     "@types/react-dom": "^18.3.0",
@@ -28,11 +28,11 @@
     "use-resize-observer": "^9.1.0"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "env-cmd -f .env.dev next dev",
     "lint": "next lint",
     "build": "next build",
-    "deploy": "firebase use dev && firebase deploy",
-    "start": "next start"
+    "deploy": "utils/replace-variables.sh dev && firebase use dev && firebase deploy",
+    "start": "utils/replace-variables.sh dev && serve out"
   },
   "browserslist": {
     "production": [
@@ -49,7 +49,9 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
+    "env-cmd": "^10.1.0",
     "eslint": "^8.57.0",
-    "eslint-config-next": "14.2.3"
+    "eslint-config-next": "14.2.3",
+    "serve": "^14.2.3"
   }
 }
