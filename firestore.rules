@@ -6,13 +6,8 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isResourceOwner() {
-      return request.auth.uid in resource.data.get('owners', []);
-    }
-
-    function isWorkspaceOwner(workspaceid) {
-      let workspace = get(/databases/$(database)/documents/workspaces/$(workspaceid)).data;
-      return workspace != null && request.auth.uid in workspace.get('owners', []);
+    function isResourceOwner(r) {
+      return request.auth.uid in r.data.get('owners', []);
     }
 
     function isValidNewWorkspace() {
@@ -20,21 +15,22 @@ service cloud.firestore {
     }
 
     match /profiles/{userid} {
-      allow read, update, delete: if signedIn() && request.auth.uid == userid;
-      allow create: if signedIn();
+      allow read, write: if signedIn() && request.auth.uid == userid;
     }
 
     match /workspaces/{workspaceid} {
-      allow read, update, delete: if signedIn() && isResourceOwner();
-      allow create: if signedIn() && isValidNewWorkspace();
+      allow create, update: if signedIn() && resource == null && isValidNewWorkspace();
+      allow read, update, delete: if signedIn() && isResourceOwner(resource);
     }
 
     match /brushes/{workspaceid} {
-      allow read, write: if signedIn() && isWorkspaceOwner(workspaceid);
+      allow read, create, update: if signedIn() && isResourceOwner(getAfter(/databases/$(database)/documents/workspaces/$(workspaceid)));
+      allow delete: if signedIn() && isResourceOwner(get(/databases/$(database)/documents/workspaces/$(workspaceid)))
     }
 
     match /stitches/{workspaceid} {
-      allow read, write: if signedIn() && isWorkspaceOwner(workspaceid);
+      allow read, create, update: if signedIn() && isResourceOwner(getAfter(/databases/$(database)/documents/workspaces/$(workspaceid)));
+      allow delete: if signedIn() && isResourceOwner(get(/databases/$(database)/documents/workspaces/$(workspaceid)))
     }
   }
 }

@@ -31,7 +31,7 @@
     "dev": "env-cmd -f .env.dev next dev",
     "lint": "next lint",
     "build": "next build",
-    "deploy": "utils/replace-variables.sh dev && firebase use dev && firebase deploy",
+    "deploy": "utils/replace-variables.sh dev && firebase use dev && firebase deploy --only hosting,firestore:rules",
     "start": "utils/replace-variables.sh dev && serve out"
   },
   "browserslist": {
