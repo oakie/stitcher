@@ -125,7 +125,7 @@ jobs:
 
       - name: Replace variables
         shell: bash
-        run: ./utils/replace-variables.sh beta
+        run: ./utils/replace-variables.sh prod
 
       - name: Setup Google Application Credentials
         shell: bash
