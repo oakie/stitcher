@@ -1,6 +1,6 @@
-import type { Metadata } from 'next';
-import React, { FC } from 'react';
 import favicon from '@shared/favicon.svg';
+import type { Metadata, Viewport } from 'next';
+import React, { FC } from 'react';
 import './global.css';
 
 export const metadata: Metadata = {
@@ -9,6 +9,14 @@ export const metadata: Metadata = {
   icons: {
     icon: favicon.src,
   },
+};
+
+export const viewport: Viewport = {
+  initialScale: 1,
+  width: 'device-width',
+  minimumScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 interface RootLayoutProps {
