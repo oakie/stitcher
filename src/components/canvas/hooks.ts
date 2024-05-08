@@ -47,15 +47,15 @@ export const useCanvasControls = (size: Size) => {
       const pointer = stage.getPointerPosition();
       if (!pointer) return;
 
-      const mousePointTo = {
+      const zoomCenter = {
         x: pointer.x / oldScale - stage.x() / oldScale,
         y: pointer.y / oldScale - stage.y() / oldScale,
       };
 
       const newScale = { x: factor, y: factor };
       const newCenter = {
-        x: -(mousePointTo.x - pointer.x / factor) * factor,
-        y: -(mousePointTo.y - pointer.y / factor) * factor,
+        x: (pointer.x / factor - zoomCenter.x) * factor,
+        y: (pointer.y / factor - zoomCenter.y) * factor,
       };
 
       setScale(newScale);
@@ -75,20 +75,21 @@ export const useCanvasControls = (size: Size) => {
     const factor = currDistance / prevDistance;
     const newScale = Math.min(Math.max(MIN_SCALE, oldScale * factor), MAX_SCALE);
 
-    const dx = (currCenter.x - prevCenter.x) / oldScale;
-    const dy = (currCenter.y - prevCenter.y) / oldScale;
+    const delta = { x: currCenter.x - prevCenter.x, y: currCenter.y - prevCenter.y };
+
+    const zoomCenter = {
+      x: (currCenter.x - stage.x()) / oldScale,
+      y: (currCenter.y - stage.y()) / oldScale,
+    };
 
     stage.scale({ x: newScale, y: newScale });
     stage.position({
-      x: stage.x() + dx * newScale,
-      y: stage.y() + dy * newScale,
+      x: currCenter.x - zoomCenter.x * newScale + delta.x,
+      y: currCenter.y - zoomCenter.y * newScale + delta.y,
     });
     stage.batchDraw();
 
-    // setScale({ x: newScale, y: newScale });
-    // setCenter((center) => ({ x: center.x + dx, y: center.y + dy }));
-
-    multitouch.current = { center: currCenter, distance: prevDistance };
+    multitouch.current = { center: currCenter, distance: currDistance };
   }, []);
 
   const handlePointerDown = React.useCallback((pos: Point) => {
@@ -127,11 +128,18 @@ export const useCanvasControls = (size: Size) => {
       const stage = e.target.getStage();
       if (!stage) return;
 
+      const container = stage.container().getBoundingClientRect();
       if (e.evt.touches.length === 1) {
         const touch1 = e.evt.touches[0];
-        const screenpos = { x: touch1.clientX, y: touch1.clientY };
+        const screenpos = { x: touch1.clientX - container.left, y: touch1.clientY - container.top };
+
         const pos = getWorldPosition(stage, screenpos);
         handlePointerDown(pos);
+      } else {
+        pointer.current.down = null;
+        pointer.current.prev = null;
+        clearDraftLayer(stage);
+        draft.current = [];
       }
     },
     [handlePointerDown]
@@ -259,9 +267,10 @@ export const useCanvasControls = (size: Size) => {
       const stage = e.target.getStage();
       if (!stage) return;
 
+      const container = stage.container().getBoundingClientRect();
       if (e.evt.touches.length === 1) {
         const touch1 = e.evt.touches[0];
-        const screenpos = { x: touch1.clientX, y: touch1.clientY };
+        const screenpos = { x: touch1.clientX - container.left, y: touch1.clientY - container.top };
         const pos = getWorldPosition(stage, screenpos);
 
         handlePointerMove(stage, pos);
@@ -274,10 +283,9 @@ export const useCanvasControls = (size: Size) => {
         if (stage.isDragging()) {
           stage.stopDrag();
         }
-        const p1 = { x: touch1.clientX, y: touch1.clientY };
-        const p2 = { x: touch2.clientX, y: touch2.clientY };
+        const p1 = { x: touch1.clientX - container.left, y: touch1.clientY - container.top };
+        const p2 = { x: touch2.clientX - container.left, y: touch2.clientY - container.top };
         handleTouchZoomOrPan(stage, p1, p2);
-        clearDraftLayer(stage);
         draft.current = [];
       }
     },
