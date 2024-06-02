@@ -13,6 +13,12 @@ export const slice = createSlice({
   name: 'brushes',
   initialState: initial(),
   reducers: {
+    update: (state, action: PayloadAction<Brush>) => {
+      state.byId[action.payload.id] = action.payload;
+      if (state.selected?.id === action.payload.id) {
+        state.selected = action.payload;
+      }
+    },
     load: (state, action: PayloadAction<{ [key: string]: Brush } | null>) => {
       const empty = Object.keys(state.byId).length === 0;
       state.byId = action.payload ?? {};

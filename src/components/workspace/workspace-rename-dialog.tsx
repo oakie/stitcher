@@ -20,7 +20,7 @@ const WorkspaceRenameDialog: FC<WorkspaceRenameDialogProps> = ({ dialogid, works
         await actions.create(name);
       } else {
         if (workspace.name !== name) {
-          await actions.rename(workspace.id, name);
+          await actions.update(workspace.id, { name });
         }
       }
       context.resolve();

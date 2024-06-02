@@ -10,14 +10,18 @@ export interface Size {
 
 export interface Profile {
   id: string;
+  email: string;
   name: string;
   active: string | null;
+  updated: Date;
   workspaces: string[] | null;
 }
 
 export interface Workspace {
   id: string;
   name: string;
+  size: Size | null;
+  thumbnail: string | null;
   owners: string[];
   created: Date;
   updated: Date;

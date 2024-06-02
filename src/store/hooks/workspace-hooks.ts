@@ -1,3 +1,4 @@
+import { colors } from '@shared/constants';
 import { Shape, Workspace } from '@shared/types';
 import StringUtils from '@utils/string-utils';
 import { doc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
@@ -7,7 +8,6 @@ import { slice } from '../slices/workspace-slice';
 import { useAuthState } from './auth-hooks';
 import { useDocumentListener, useOwnedCollectionListener } from './firebase-hooks';
 import { useAppDispatch, useAppSelector } from './store-hooks';
-import { colors } from '@shared/constants';
 
 export const useWorkspaceState = () => useAppSelector((state) => state.workspaces);
 
@@ -37,13 +37,13 @@ export const useWorkspaceActions = () => {
         color: colors[0],
       };
       transaction.set(doc(database, 'brushes', workspace.id), { [brush.id]: brush });
-      transaction.set(doc(database, 'profiles', userid), { active: workspace.id }, { merge: true });
+      transaction.set(doc(database, 'profiles', userid), { active: workspace.id, updated: serverTimestamp() }, { merge: true });
     });
   };
 
-  const rename = async (workspaceid: string, name: string) => {
+  const update = async (workspaceid: string, data: Partial<Workspace>) => {
     const docref = doc(database, 'workspaces', workspaceid);
-    await setDoc(docref, { name, updated: serverTimestamp() }, { merge: true });
+    await setDoc(docref, { ...data, updated: serverTimestamp() }, { merge: true });
   };
 
   const select = async (workspaceid: string | null) => {
@@ -52,7 +52,7 @@ export const useWorkspaceActions = () => {
     }
 
     const docref = doc(database, 'profiles', auth.user.userid);
-    await setDoc(docref, { active: workspaceid }, { merge: true });
+    await setDoc(docref, { active: workspaceid, updated: serverTimestamp() }, { merge: true });
   };
 
   const remove = async (workspaceid: string) => {
@@ -62,16 +62,16 @@ export const useWorkspaceActions = () => {
     const userid = auth.user.userid;
 
     await runTransaction(database, async (transaction) => {
+      transaction.set(doc(database, 'profiles', userid), { active: null }, { merge: true });
       transaction.delete(doc(database, 'stitches', workspaceid));
       transaction.delete(doc(database, 'brushes', workspaceid));
       transaction.delete(doc(database, 'workspaces', workspaceid));
-      transaction.set(doc(database, 'profiles', userid), { active: null }, { merge: true });
     });
   };
 
   return {
     create,
-    rename,
+    update,
     select,
     remove,
   };
