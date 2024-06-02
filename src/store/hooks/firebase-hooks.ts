@@ -30,8 +30,6 @@ export const useDocumentListener = <T>(path: string, skip: boolean, action: Acti
 const dispatchActions = <T>(snapshot: QuerySnapshot<DocumentData, DocumentData>, action: (type: 'created' | 'updated' | 'removed', data: T[]) => void) => {
   const changes = snapshot.docChanges();
 
-  console.log('changes', changes);
-
   const created = changes.filter((x) => x.type === 'added').map((x) => convertTimestamps(x.doc.data()) as T);
   const updated = changes.filter((x) => x.type === 'modified').map((x) => convertTimestamps(x.doc.data()) as T);
   const removed = changes.filter((x) => x.type === 'removed').map((x) => convertTimestamps(x.doc.data()) as T);

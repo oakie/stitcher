@@ -15,7 +15,7 @@ export const convertTimestamps = (data: DocumentData | null | undefined) => {
     }
 
     // convert timestamp properties
-    if (value && Object.prototype.hasOwnProperty.call(value, 'seconds')) {
+    if (value && value instanceof Timestamp) {
       data[key] = (value as Timestamp).toDate();
     }
   }
