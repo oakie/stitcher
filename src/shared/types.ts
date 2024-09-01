@@ -9,12 +9,13 @@ export interface Size {
 }
 
 export interface Profile {
-  id: string;
+  userid: string;
   email: string;
   name: string;
-  active: string | null;
+  avatar: string;
   updated: Date;
   workspaces: string[] | null;
+  keywords: string[] | null;
 }
 
 export interface Workspace {

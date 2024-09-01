@@ -16,7 +16,7 @@ const WorkspaceRemoveDialog: FC<WorkspaceRemoveDialogProps> = ({ dialogid, works
     try {
       await actions.remove(workspace.id);
       context.resolve();
-    } catch (e) {
+    } catch {
       context.reject();
     }
   };

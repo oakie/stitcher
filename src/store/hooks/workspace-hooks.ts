@@ -1,18 +1,20 @@
 import { colors } from '@shared/constants';
 import { Shape, Workspace } from '@shared/types';
 import StringUtils from '@utils/string-utils';
-import { doc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
+import { arrayUnion, doc, runTransaction, serverTimestamp, setDoc } from 'firebase/firestore';
 import React from 'react';
+import { useNavigate } from 'react-router';
 import { database } from '../firebase/setup';
 import { slice } from '../slices/workspace-slice';
 import { useAuthState } from './auth-hooks';
-import { useDocumentListener, useOwnedCollectionListener } from './firebase-hooks';
+import { ActionType, useDocumentListener, useOwnedCollectionListener } from './firebase-hooks';
 import { useAppDispatch, useAppSelector } from './store-hooks';
 
 export const useWorkspaceState = () => useAppSelector((state) => state.workspaces);
 
 export const useWorkspaceActions = () => {
   const auth = useAuthState();
+  const navigate = useNavigate();
 
   const create = async (name: string) => {
     if (!auth.user) {
@@ -20,10 +22,11 @@ export const useWorkspaceActions = () => {
     }
 
     const userid = auth.user.userid;
+    const workspaceid = StringUtils.random(16);
 
     await runTransaction(database, async (transaction) => {
       const workspace = {
-        id: StringUtils.random(16),
+        id: workspaceid,
         name,
         created: serverTimestamp(),
         updated: serverTimestamp(),
@@ -37,22 +40,15 @@ export const useWorkspaceActions = () => {
         color: colors[0],
       };
       transaction.set(doc(database, 'brushes', workspace.id), { [brush.id]: brush });
-      transaction.set(doc(database, 'profiles', userid), { active: workspace.id, updated: serverTimestamp() }, { merge: true });
+      transaction.set(doc(database, 'profiles', userid), { updated: serverTimestamp() }, { merge: true });
     });
+
+    navigate(`/workspaces/${workspaceid}`);
   };
 
   const update = async (workspaceid: string, data: Partial<Workspace>) => {
     const docref = doc(database, 'workspaces', workspaceid);
     await setDoc(docref, { ...data, updated: serverTimestamp() }, { merge: true });
-  };
-
-  const select = async (workspaceid: string | null) => {
-    if (!auth.user) {
-      throw new Error('user is not authenticated');
-    }
-
-    const docref = doc(database, 'profiles', auth.user.userid);
-    await setDoc(docref, { active: workspaceid, updated: serverTimestamp() }, { merge: true });
   };
 
   const remove = async (workspaceid: string) => {
@@ -62,18 +58,23 @@ export const useWorkspaceActions = () => {
     const userid = auth.user.userid;
 
     await runTransaction(database, async (transaction) => {
-      transaction.set(doc(database, 'profiles', userid), { active: null }, { merge: true });
+      transaction.set(doc(database, 'profiles', userid), { updated: serverTimestamp() }, { merge: true });
       transaction.delete(doc(database, 'stitches', workspaceid));
       transaction.delete(doc(database, 'brushes', workspaceid));
       transaction.delete(doc(database, 'workspaces', workspaceid));
     });
   };
 
+  const share = async (workspaceid: string, userid: string) => {
+    const docref = doc(database, 'workspaces', workspaceid);
+    await setDoc(docref, { owners: arrayUnion(userid), updated: serverTimestamp() }, { merge: true });
+  };
+
   return {
     create,
     update,
-    select,
     remove,
+    share,
   };
 };
 
@@ -83,12 +84,11 @@ export const useWorkspaces = () => {
   return React.useMemo(() => ({ state, actions }), [state, actions]);
 };
 
-export const useWorkspaceListener = (userid: string | null, workspaceid: string | null) => {
+export const useOverviewListener = (userid: string | null) => {
   const dispatch = useAppDispatch();
-  useDocumentListener<Workspace>(`workspaces/${workspaceid}`, !workspaceid, slice.actions.select);
 
   const callback = React.useCallback(
-    (type: 'created' | 'updated' | 'removed', data: Workspace[]) => {
+    (type: ActionType, data: Workspace[]) => {
       if (type === 'created') {
         dispatch(slice.actions.create(data));
       }
@@ -102,4 +102,8 @@ export const useWorkspaceListener = (userid: string | null, workspaceid: string 
     [dispatch]
   );
   useOwnedCollectionListener<Workspace>(userid, 'workspaces', !userid, callback);
+};
+
+export const useWorkspaceListener = (workspaceid: string | null) => {
+  useDocumentListener<Workspace>(`workspaces/${workspaceid}`, !workspaceid, slice.actions.load);
 };

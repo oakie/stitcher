@@ -1,12 +1,7 @@
-import {
-  FontAwesomeIcon,
-  FontAwesomeIconProps,
-} from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
 import React, { FC } from 'react';
 
-export interface IconProps extends FontAwesomeIconProps {}
-
-const Icon: FC<IconProps> = ({ icon, ...props }) => {
+const Icon: FC<FontAwesomeIconProps> = ({ icon, ...props }) => {
   return <FontAwesomeIcon icon={icon} fixedWidth {...props} />;
 };
 

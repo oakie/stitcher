@@ -15,7 +15,8 @@ service cloud.firestore {
     }
 
     match /profiles/{userid} {
-      allow read, write: if signedIn() && request.auth.uid == userid;
+      allow read: if signedIn();
+      allow write: if signedIn() && request.auth.uid == userid;
     }
 
     match /workspaces/{workspaceid} {

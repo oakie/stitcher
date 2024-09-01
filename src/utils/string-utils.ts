@@ -8,5 +8,19 @@ const random = (length: number) => {
   return result;
 };
 
-const StringUtils = { random };
+const keywords = (...terms: string[]) => {
+  const substrings = terms.map((x) => x.toLowerCase().split(/[\s@.]/)).flat();
+  const keywords: Set<string> = new Set<string>();
+
+  for (const str of substrings) {
+    if (str.length < 3) continue;
+    for (let i = 3; i <= str.length; ++i) {
+      keywords.add(str.substring(i - 3, i));
+    }
+  }
+
+  return Array.from(keywords.values());
+};
+
+const StringUtils = { random, keywords };
 export default StringUtils;

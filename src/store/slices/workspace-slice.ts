@@ -27,7 +27,7 @@ export const slice = createSlice({
         state.active = null;
       }
     },
-    select: (state, action: PayloadAction<Workspace | null>) => {
+    load: (state, action: PayloadAction<Workspace | null>) => {
       state.active = action.payload;
     },
   },

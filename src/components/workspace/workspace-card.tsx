@@ -31,24 +31,30 @@ interface WorkspaceCardProps {
   onClickClose?: () => void;
   onClickEdit?: () => void;
   onClickRemove?: () => void;
+  onClickShare?: () => void;
   expand?: boolean;
 }
 
-const WorkspaceCard: FC<WorkspaceCardProps> = ({ workspace, onClickOpen, onClickClose, onClickEdit, onClickRemove, expand = false }) => {
+const WorkspaceCard: FC<WorkspaceCardProps> = ({
+  workspace,
+  onClickOpen,
+  onClickClose,
+  onClickEdit,
+  onClickRemove,
+  onClickShare,
+  expand = false,
+}) => {
   return (
     <StyledCard $expand={expand} border="secondary">
       <Card.Header className="d-flex align-items-center gap-1">
         <Card.Title className="mb-0 text-nowrap text-truncate">{workspace.name}</Card.Title>
-        {onClickEdit && (
-          <Button variant="link" size="sm" className="text-light flex-shrink-0" onClick={onClickEdit}>
-            <Icon icon="pen" />
-          </Button>
-        )}
-        {onClickRemove && (
-          <Button variant="link" size="sm" className="text-light flex-shrink-0 ms-auto" onClick={onClickRemove}>
-            <Icon icon="trash" />
-          </Button>
-        )}
+        <div className="d-flex flex-shrink-0 ms-auto">
+          {onClickEdit && (
+            <Button variant="link" size="sm" className="text-light p-1" onClick={onClickEdit}>
+              <Icon icon="pen" />
+            </Button>
+          )}
+        </div>
       </Card.Header>
       <Card.Body>
         <Stack gap={2}>
@@ -66,17 +72,31 @@ const WorkspaceCard: FC<WorkspaceCardProps> = ({ workspace, onClickOpen, onClick
           </Stack>
         </Stack>
       </Card.Body>
-      <Card.Footer className="d-flex justify-content-between flex-row-reverse">
-        {onClickOpen && (
-          <Button variant="link-secondary py-0" onClick={onClickOpen}>
-            open
-          </Button>
-        )}
-        {onClickClose && (
-          <Button variant="link-secondary py-0" onClick={onClickClose}>
-            close
-          </Button>
-        )}
+      <Card.Footer className="d-flex justify-content-between">
+        <div>
+          {onClickShare && (
+            <Button variant="link" size="sm" className="text-light p-1" onClick={onClickShare}>
+              <Icon icon="share-alt" />
+            </Button>
+          )}
+          {onClickRemove && (
+            <Button variant="link" size="sm" className="text-light p-1" onClick={onClickRemove}>
+              <Icon icon="trash" />
+            </Button>
+          )}
+        </div>
+        <div>
+          {onClickOpen && (
+            <Button variant="link-secondary p-0" onClick={onClickOpen}>
+              open
+            </Button>
+          )}
+          {onClickClose && (
+            <Button variant="link-secondary p-0" onClick={onClickClose}>
+              close
+            </Button>
+          )}
+        </div>
       </Card.Footer>
     </StyledCard>
   );
