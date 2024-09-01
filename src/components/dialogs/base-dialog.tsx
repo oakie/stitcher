@@ -27,10 +27,12 @@ export const BaseDialog: FC<BaseDialogProps> = ({ dialogid, title, onSubmit, onC
         <Modal.Header closeButton>{title && <Modal.Title>{title}</Modal.Title>}</Modal.Header>
         <Modal.Body>{children}</Modal.Body>
         <Modal.Footer>
-          <Button variant="outline-secondary" onClick={cancel}>
-            Cancel
-          </Button>
-          <Button onClick={submit}>Submit</Button>
+          {onCancel && (
+            <Button variant="outline-secondary" onClick={cancel}>
+              Cancel
+            </Button>
+          )}
+          {onSubmit && <Button onClick={submit}>Submit</Button>}
         </Modal.Footer>
       </Modal>
     </div>

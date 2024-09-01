@@ -5,6 +5,8 @@ import { database } from '../firebase/setup';
 import { useAppDispatch } from './store-hooks';
 import { convertTimestamps } from '../firebase/utils';
 
+export type ActionType = 'created' | 'updated' | 'removed';
+
 export const useDocumentListener = <T>(path: string, skip: boolean, action: ActionCreatorWithPayload<T | null>) => {
   const dispatch = useAppDispatch();
   React.useEffect(() => {
@@ -27,19 +29,25 @@ export const useDocumentListener = <T>(path: string, skip: boolean, action: Acti
   }, [path, skip, action, dispatch]);
 };
 
-const dispatchActions = <T>(snapshot: QuerySnapshot<DocumentData, DocumentData>, action: (type: 'created' | 'updated' | 'removed', data: T[]) => void) => {
+const dispatchActions = <T>(snapshot: QuerySnapshot<DocumentData, DocumentData>, action: (type: ActionType, data: T[]) => void) => {
   const changes = snapshot.docChanges();
 
   const created = changes.filter((x) => x.type === 'added').map((x) => convertTimestamps(x.doc.data()) as T);
   const updated = changes.filter((x) => x.type === 'modified').map((x) => convertTimestamps(x.doc.data()) as T);
   const removed = changes.filter((x) => x.type === 'removed').map((x) => convertTimestamps(x.doc.data()) as T);
 
-  action('created', created);
-  action('updated', updated);
-  action('removed', removed);
+  if (created.length) {
+    action('created', created);
+  }
+  if (updated.length) {
+    action('updated', updated);
+  }
+  if (removed.length) {
+    action('removed', removed);
+  }
 };
 
-export const useCollectionListener = <T>(path: string, skip: boolean, action: (type: string, data: T[]) => void) => {
+export const useCollectionListener = <T>(path: string, skip: boolean, action: (type: ActionType, data: T[]) => void) => {
   React.useEffect(() => {
     if (skip) return;
 
@@ -58,7 +66,7 @@ export const useOwnedCollectionListener = <T>(
   userid: string | null,
   path: string,
   skip: boolean,
-  action: (type: 'created' | 'updated' | 'removed', data: T[]) => void
+  action: (type: ActionType, data: T[]) => void
 ) => {
   React.useEffect(() => {
     if (skip) return;

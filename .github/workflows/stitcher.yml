@@ -1,8 +1,13 @@
 name: Build and deploy stitcher
 
 on:
-  push:
     # Runs on pushes targeting the default branch
+  push:
+    branches:
+      - master
+
+  # Runs on PRs targeting the default branch
+  pull_request:
     branches:
       - master
 
@@ -24,7 +29,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Build site
         run: npm run build
@@ -40,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     env:
-      NEXT_PUBLIC_APP_VERSION: ${{ github.run_id }}
+      VITE_APP_VERSION: ${{ github.run_id }}
       GOOGLE_APPLICATION_CREDENTIALS: google-application-credentials.json
     permissions:
       contents: read
@@ -85,7 +90,7 @@ jobs:
         run: npm install -g firebase-tools
 
       - name: Deploy to stitcher-beta
-        run: firebase use beta && firebase deploy --only hosting,firestore:rules
+        run: firebase use beta && firebase deploy --only hosting,firestore
 
       - name: Remove Google Application Credentials
         if: success() || failure()
@@ -96,7 +101,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: beta
     env:
-      NEXT_PUBLIC_APP_VERSION: ${{ github.run_id }}
+      VITE_APP_VERSION: ${{ github.run_id }}
       GOOGLE_APPLICATION_CREDENTIALS: google-application-credentials.json
     permissions:
       contents: read
@@ -127,7 +132,7 @@ jobs:
 
       - name: Replace variables
         shell: bash
-        run: ./utils/replace-variables.sh prod
+        run: ./utils/replace-variables.sh production
 
       - name: Setup Google Application Credentials
         shell: bash
@@ -137,7 +142,7 @@ jobs:
         run: npm install -g firebase-tools
 
       - name: Deploy to stitcher-prod
-        run: firebase use prod && firebase deploy --only hosting,firestore:rules
+        run: firebase use production && firebase deploy --only hosting,firestore
 
       - name: Remove Google Application Credentials
         if: success() || failure()

@@ -24,7 +24,7 @@ const WorkspaceRenameDialog: FC<WorkspaceRenameDialogProps> = ({ dialogid, works
         }
       }
       context.resolve();
-    } catch (e) {
+    } catch {
       context.reject();
     }
   };

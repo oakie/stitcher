@@ -17,7 +17,9 @@ const renderCells = (stitches: { [key: string]: Stitch }, brushes: { [key: strin
   const result: React.ReactElement[] = [];
   for (const stitch of Object.values(stitches)) {
     const brush = brushes[stitch.brush];
-    result.push(<Cell key={stitch.id} x={stitch.x} y={stitch.y} shape={brush.shape} color={brush.color} />);
+    if (brush) {
+      result.push(<Cell key={stitch.id} x={stitch.x} y={stitch.y} shape={brush.shape} color={brush.color} />);
+    }
   }
   return result;
 };
