@@ -1,8 +1,13 @@
 name: Build and deploy stitcher
 
 on:
-  push:
     # Runs on pushes targeting the default branch
+  push:
+    branches:
+      - master
+
+  # Runs on PRs targeting the default branch
+  pull_request:
     branches:
       - master
 
