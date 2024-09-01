@@ -34,7 +34,7 @@
     "start": "vite --host",
     "build": "vite build --mode GENERIC",
     "lint": "eslint .",
-    "deploy": "utils/replace-variables.sh development && firebase use development && firebase deploy --only hosting,firestore:rules"
+    "deploy": "utils/replace-variables.sh development && firebase use development && firebase deploy --only hosting,firestore"
   },
   "browserslist": {
     "production": [
