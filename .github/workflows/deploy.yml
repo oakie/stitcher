@@ -20,6 +20,14 @@ jobs:
     environment: ${{ inputs.target }}
     env:
       GOOGLE_APPLICATION_CREDENTIALS: google-application-credentials.json
+      DEPLOY_APP_ENVIRONMENT: ${{ vars.APP_ENVIRONMENT }}
+      DEPLOY_FIREBASE_APIKEY: ${{ vars.FIREBASE_APIKEY }}
+      DEPLOY_FIREBASE_AUTHDOMAIN: ${{ vars.FIREBASE_AUTHDOMAIN }}
+      DEPLOY_FIREBASE_PROJECTID: ${{ vars.FIREBASE_PROJECTID }}
+      DEPLOY_FIREBASE_STORAGEBUCKET: ${{ vars.FIREBASE_STORAGEBUCKET }}
+      DEPLOY_FIREBASE_MESSAGINGSENDERID: ${{ vars.FIREBASE_MESSAGINGSENDERID }}
+      DEPLOY_FIREBASE_APPID: ${{ vars.FIREBASE_APPID }}
+      DEPLOY_FIREBASE_MEASUREMENTID: ${{ vars.FIREBASE_MEASUREMENTID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,7 +50,7 @@ jobs:
           input-files:
             ./out/**/*.js
           prefixes: |
-            REPLACE
+            DEPLOY
 
       - name: Print build contents
         shell: bash
@@ -56,7 +64,7 @@ jobs:
         run: npm install -g firebase-tools
 
       - name: Deploy to ${{ inputs.target }}
-        run: firebase use ${{ vars.DEPLOY_FIREBASE_PROJECT }} && firebase deploy --only hosting,firestore
+        run: firebase use ${{ vars.FIREBASE_PROJECT }} && firebase deploy --only hosting,firestore
 
       - name: Remove Google Application Credentials
         if: success() || failure()
