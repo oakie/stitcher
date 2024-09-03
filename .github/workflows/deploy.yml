@@ -16,9 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GOOGLE_APPLICATION_CREDENTIALS: google-application-credentials.json
-    permissions:
-      contents: read
-      issues: write
     steps:
       - uses: trstringer/manual-approval@v1
         with:
