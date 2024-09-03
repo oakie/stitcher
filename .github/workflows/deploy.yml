@@ -36,6 +36,10 @@ jobs:
           name: build
           path: ./out
 
+      - name: Replace variables
+        shell: bash
+        run: ./utils/replace-variables.sh
+
       - name: Print build contents
         shell: bash
         run: ls ./out
