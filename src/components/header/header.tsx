@@ -23,7 +23,7 @@ const Header: FC<HeaderProps> = ({ openMenu }) => {
       <Navbar.Brand href="/" className="d-flex align-items-center" onClick={() => navigate(paths.ROOT)}>
         <Favicon title="stitcher" height={32} />
         stitcher
-        {environment !== 'production' && ` [${environment}]`}
+        {environment !== 'prod' && ` [${environment}]`}
       </Navbar.Brand>
       <NavbarRight>
         <Button variant="link" onClick={openMenu}>

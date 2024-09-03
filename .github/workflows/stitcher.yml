@@ -33,6 +33,7 @@ jobs:
   prod:
     name: Deploy
     needs: [build, beta]
+    if: ${{ github.ref == 'refs/heads/master' }}
     uses: ./.github/workflows/deploy.yml
     with:
       version: ${{ needs.build.outputs.version }}
