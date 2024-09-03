@@ -26,7 +26,7 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       version: ${{ needs.build.outputs.version }}
-      target: beta
+      target: Beta
     secrets:
       credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_BETA }}
 
@@ -37,6 +37,6 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       version: ${{ needs.build.outputs.version }}
-      target: prod
+      target: Production
     secrets:
       credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_PROD }}
