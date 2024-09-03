@@ -36,9 +36,11 @@ jobs:
           name: build
           path: ./out
 
-      - name: Replace variables
-        shell: bash
-        run: ./utils/replace-variables.sh
+      - name: Substitute variables
+        uses: iamazeem/substitute-action@v1
+        with:
+          input-files:
+            ./out/**/*.js
 
       - name: Print build contents
         shell: bash
