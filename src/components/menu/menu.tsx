@@ -59,7 +59,7 @@ const Menu: FC<MenuProps> = ({ show, onHide }) => {
         )}
 
         <Bottom className="d-flex flex-column mt-auto">
-          app version: {appversion}
+          version: v{appversion}
           <Button variant="link-secondary" onClick={signout} className="align-self-end">
             sign out
           </Button>
