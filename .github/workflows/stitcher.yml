@@ -18,6 +18,7 @@ jobs:
   
   beta:
     name: Beta
+    needs: build
     uses: ./.github/workflows/deploy.yml
     with:
       target: beta
