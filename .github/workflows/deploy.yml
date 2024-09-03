@@ -20,14 +20,6 @@ jobs:
     environment: ${{ inputs.target }}
     env:
       GOOGLE_APPLICATION_CREDENTIALS: google-application-credentials.json
-      APP_ENVIRONMENT: ${{ vars.APP_ENVIRONMENT }}
-      FIREBASE_APIKEY: ${{ vars.FIREBASE_APIKEY }}
-      FIREBASE_AUTHDOMAIN: ${{ vars.FIREBASE_AUTHDOMAIN }}
-      FIREBASE_PROJECTID: ${{ vars.FIREBASE_PROJECTID }}
-      FIREBASE_STORAGEBUCKET: ${{ vars.FIREBASE_STORAGEBUCKET }}
-      FIREBASE_MESSAGINGSENDERID: ${{ vars.FIREBASE_MESSAGINGSENDERID }}
-      FIREBASE_APPID: ${{ vars.FIREBASE_APPID }}
-      FIREBASE_MEASUREMENTID: ${{ vars.FIREBASE_MEASUREMENTID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -49,6 +41,8 @@ jobs:
         with:
           input-files:
             ./out/**/*.js
+          prefixes: |
+            REPLACE
 
       - name: Print build contents
         shell: bash
