@@ -64,7 +64,7 @@ jobs:
         run: npm install -g firebase-tools
 
       - name: Deploy to ${{ inputs.target }}
-        run: firebase use ${{ vars.FIREBASE_PROJECT }} && firebase deploy --only hosting,firestore
+        run: firebase use ${{ vars.FIREBASE_PROJECT_ALIAS }} && firebase deploy --only hosting,firestore
 
       - name: Remove Google Application Credentials
         if: success() || failure()
