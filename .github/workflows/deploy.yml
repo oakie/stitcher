@@ -3,6 +3,9 @@ name: Deploy
 on:
   workflow_call:
     inputs:
+      version:
+        required: true
+        type: string
       target:
         required: true
         type: string
@@ -12,7 +15,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy ${{ inputs.target }}
+    name: ${{ inputs.target }}
     runs-on: ubuntu-latest
     env:
       GOOGLE_APPLICATION_CREDENTIALS: google-application-credentials.json
@@ -22,8 +25,8 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: ${{ github.repository_owner }}
           minimum-approvals: 1
-          issue-title: 'Deploying v${{ github.run_id }} to ${{ inputs.target }}'
-          issue-body: 'Please approve or deny the deployment of version v${{ github.run_id }}.'
+          issue-title: 'Deploying v${{ inputs.version }} to ${{ inputs.target }}'
+          issue-body: 'Please approve or deny the deployment of version v${{ inputs.version }} to target ${{ inputs.target }}.'
 
       - name: Checkout
         uses: actions/checkout@v4

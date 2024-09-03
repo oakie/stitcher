@@ -11,6 +11,9 @@ on:
 
   workflow_dispatch:
 
+env:
+  VERSION: ${{ github.run_number }}
+
 permissions:
   contents: read
   issues: write
@@ -19,142 +22,25 @@ jobs:
   build:
     name: Build
     uses: ./.github/workflows/build.yml
-  
+    with:
+      version: "$VERSION"
+
   beta:
-    name: Beta
+    name: Deploy
     needs: build
     uses: ./.github/workflows/deploy.yml
     with:
+      version: "$VERSION"
       target: beta
     secrets:
       credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_BETA }}
 
-    # steps:
-    #   - name: Checkout
-    #     uses: actions/checkout@v4
-
-    #   - name: Setup Node
-    #     uses: actions/setup-node@v4
-    #     with:
-    #       node-version: '20'
-    #       cache: npm
-
-    #   - name: Install dependencies
-    #     run: npm ci
-
-    #   - name: Build site
-    #     run: npm run build
-
-    #   - name: Upload artifact
-    #     uses: actions/upload-artifact@v4
-    #     with:
-    #       name: build
-    #       path: ./out
-
-  # beta:
-  #   name: Deploy beta
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   env:
-  #     VITE_APP_VERSION: ${{ github.run_id }}
-  #     GOOGLE_APPLICATION_CREDENTIALS: google-application-credentials.json
-  #   permissions:
-  #     contents: read
-  #     issues: write
-  #   steps:
-  #     - uses: trstringer/manual-approval@v1
-  #       with:
-  #         secret: ${{ github.TOKEN }}
-  #         approvers: ${{ github.repository_owner }}
-  #         minimum-approvals: 1
-  #         issue-title: 'Deploying v${{ github.run_id }} to beta'
-  #         issue-body: 'Please approve or deny the deployment of version v${{ github.run_id }}.'
-
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-
-  #     - name: Setup Node
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: '20'
-  #         cache: npm
-
-  #     - name: Download artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: build
-  #         path: ./out
-
-  #     - name: Print build contents
-  #       shell: bash
-  #       run: ls ./out
-
-  #     - name: Replace variables
-  #       shell: bash
-  #       run: ./utils/replace-variables.sh beta
-
-  #     - name: Setup Google Application Credentials
-  #       shell: bash
-  #       run: echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_BETA }}" | base64 --decode > "google-application-credentials.json"
-
-  #     - name: Install Firebase CLI
-  #       run: npm install -g firebase-tools
-
-  #     - name: Deploy to stitcher-beta
-  #       run: firebase use beta && firebase deploy --only hosting,firestore
-
-  #     - name: Remove Google Application Credentials
-  #       if: success() || failure()
-  #       run: rm google-application-credentials.json
-
   prod:
-    name: Deploy prod
-    runs-on: ubuntu-latest
+    name: Deploy
     needs: beta
-    env:
-      VITE_APP_VERSION: ${{ github.run_id }}
-      GOOGLE_APPLICATION_CREDENTIALS: google-application-credentials.json
-    permissions:
-      contents: read
-      issues: write
-    steps:
-      - uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: ${{ github.repository_owner }}
-          minimum-approvals: 1
-          issue-title: 'Deploying v${{ github.run_id }} to prod'
-          issue-body: 'Please approve or deny the deployment of version v${{ github.run_id }}.'
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: npm
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build
-          path: ./out
-
-      - name: Replace variables
-        shell: bash
-        run: ./utils/replace-variables.sh production
-
-      - name: Setup Google Application Credentials
-        shell: bash
-        run: echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_PROD }}" | base64 --decode > "google-application-credentials.json"
-
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
-
-      - name: Deploy to stitcher-prod
-        run: firebase use production && firebase deploy --only hosting,firestore
-
-      - name: Remove Google Application Credentials
-        if: success() || failure()
-        run: rm google-application-credentials.json
+    uses: ./.github/workflows/deploy.yml
+    with:
+      version: "$VERSION"
+      target: prod
+    secrets:
+      credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_PROD }}
