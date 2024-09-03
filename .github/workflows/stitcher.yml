@@ -11,9 +11,6 @@ on:
 
   workflow_dispatch:
 
-env:
-  VERSION: ${{ github.run_number }}
-
 permissions:
   contents: read
   issues: write
@@ -22,25 +19,23 @@ jobs:
   build:
     name: Build
     uses: ./.github/workflows/build.yml
-    with:
-      version: "$VERSION"
 
   beta:
     name: Deploy
     needs: build
     uses: ./.github/workflows/deploy.yml
     with:
-      version: "$VERSION"
+      version: ${{ needs.build.outputs.version }}
       target: beta
     secrets:
       credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_BETA }}
 
   prod:
     name: Deploy
-    needs: beta
+    needs: [build, beta]
     uses: ./.github/workflows/deploy.yml
     with:
-      version: "$VERSION"
+      version: ${{ needs.build.outputs.version }}
       target: prod
     secrets:
       credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_PROD }}
