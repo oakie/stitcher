@@ -1,8 +1,26 @@
 import { Brush, Shape } from '@shared/types';
 import { useBrushActions } from '@store';
 import React, { FC } from 'react';
-import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import styled from 'styled-components';
 import BrushShape from './brush-shape';
+
+const Container = styled.div`
+  width: 120px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+`;
+
+const ShapeItem = styled.div<{ selected: boolean }>`
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: ${(p) => (p.selected ? '1px solid currentColor' : '0')};
+  border-radius: 4px;
+  cursor: pointer;
+`;
 
 interface ShapePickerProps {
   brush: Brush;
@@ -21,13 +39,13 @@ const ShapePicker: FC<ShapePickerProps> = React.memo(({ brush }) => {
   );
 
   return (
-    <ToggleButtonGroup name="shape-picker-btn-group" size="sm" type="radio" value={brush.shape} onChange={handlePickShape}>
-      {shapes.map((s) => (
-        <ToggleButton key={s} variant="outline-secondary" type="radio" id={`shape-picker-${s}`} value={s}>
-          <BrushShape shape={s} />
-        </ToggleButton>
+    <Container>
+      {shapes.map((x) => (
+        <ShapeItem key={x} selected={brush.shape === x} onClick={() => handlePickShape(x)}>
+          <BrushShape shape={x} />
+        </ShapeItem>
       ))}
-    </ToggleButtonGroup>
+    </Container>
   );
 });
 

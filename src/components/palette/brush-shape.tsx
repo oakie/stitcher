@@ -4,8 +4,10 @@ import { Shape } from '@shared/types';
 import React, { FC } from 'react';
 
 const shapes = {
-  [Shape.CROSS]: 'times' as IconProp,
-  [Shape.SQUARE]: 'square' as IconProp,
+  [Shape.CROSS]: ['fas', 'xmark'] as IconProp,
+  [Shape.CIRCLE]: ['far', 'circle'] as IconProp,
+  [Shape.SQUARE]: ['fas', 'square'] as IconProp,
+  [Shape.DISC]: ['fas', 'circle'] as IconProp,
 };
 
 interface BrushShapeProps {

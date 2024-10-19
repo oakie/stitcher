@@ -1,38 +1,41 @@
 import { colors } from '@shared/constants';
 import { Brush } from '@shared/types';
 import { useBrushActions } from '@store';
+import ColorUtils from '@utils/color-utils';
 import React, { FC } from 'react';
-import { BlockPicker, ColorResult } from 'react-color';
 import { styled } from 'styled-components';
 
-const StyledColorPicker = styled(BlockPicker)`
-  border-radius: 0 !important;
-  background-color: transparent !important;
-  box-shadow: initial !important;
-  font-family: inherit !important;
-  font-weight: bold;
+const Container = styled.div`
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+`;
 
-  > div:last-child {
-    padding: 0 !important;
-    padding-top: 10px !important;
+const SelectedColor = styled.div<{ color: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  background-color: ${(p) => p.color};
+  border-radius: 4px;
+  color: ${(p) => (ColorUtils.isDarkColor(p.color) ? 'white' : 'black')};
+  font-size: x-large;
+`;
 
-    > div:first-child {
-      display: flex !important;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      margin: 0 !important;
-      margin-bottom: -10px !important;
+const ColorList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+`;
 
-      > span > div {
-        margin: 0 !important;
-      }
-    }
-
-    > div:last-child {
-      display: none !important;
-    }
-  }
+const ColorItem = styled.div<{ color: string }>`
+  width: 24px;
+  height: 24px;
+  background-color: ${(p) => p.color};
+  border-radius: 4px;
+  cursor: pointer;
 `;
 
 interface ColorPickerProps {
@@ -43,14 +46,25 @@ const ColorPicker: FC<ColorPickerProps> = React.memo(({ brush }) => {
   const brushActions = useBrushActions();
 
   const handlePickColor = React.useCallback(
-    (color: ColorResult) => {
-      const payload = { ...brush, color: color.hex };
+    (color: string) => {
+      const payload = { ...brush, color };
       brushActions.update(payload);
     },
     [brushActions, brush]
   );
 
-  return <StyledColorPicker colors={colors} triangle="hide" width="120px" color={brush.color} onChangeComplete={handlePickColor} />;
+  return (
+    <Container>
+      <SelectedColor color={brush.color}>
+        <strong>{brush.color}</strong>
+      </SelectedColor>
+      <ColorList>
+        {colors.map((x) => (
+          <ColorItem key={x} color={x} onClick={() => handlePickColor(x)} />
+        ))}
+      </ColorList>
+    </Container>
+  );
 });
 
 export default ColorPicker;

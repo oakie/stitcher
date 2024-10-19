@@ -43,5 +43,7 @@ export interface Stitch {
 
 export enum Shape {
   CROSS = 'cross',
+  CIRCLE = 'circle',
   SQUARE = 'square',
+  DISC = 'disc'
 }

@@ -1,6 +1,8 @@
 import { Shape } from '@shared/types';
 import React, { FC } from 'react';
-import { Group, Line } from 'react-konva';
+import { Circle, Group, Line } from 'react-konva';
+
+const MARGIN = 0.05;
 
 export interface CellShapeProps {
   color: string;
@@ -11,37 +13,66 @@ const CellCross: FC<CellShapeProps> = React.memo(({ color }) => {
   return (
     <>
       <Line
-        points={[halfStroke, halfStroke, 1 - halfStroke, 1 - halfStroke]}
+        points={[halfStroke + MARGIN, halfStroke + MARGIN, 1 - halfStroke - MARGIN, 1 - halfStroke - MARGIN]}
         stroke={color}
         strokeWidth={2 * halfStroke}
         lineCap="round"
         listening={false}
-        transformsEnabled=""
       />
       <Line
-        points={[halfStroke, 1 - halfStroke, 1 - halfStroke, halfStroke]}
+        points={[halfStroke + MARGIN, 1 - halfStroke - MARGIN, 1 - halfStroke - MARGIN, halfStroke + MARGIN]}
         stroke={color}
         strokeWidth={2 * halfStroke}
         lineCap="round"
         listening={false}
-        transformsEnabled=""
       />
     </>
   );
 });
 
+const CellCircle: FC<CellShapeProps> = React.memo(({ color }) => {
+  const halfStroke = 0.1;
+  return (
+    <Circle
+      x={0.5}
+      y={0.5}
+      radius={0.5 - halfStroke - MARGIN}
+      stroke={color}
+      strokeWidth={2 * halfStroke}
+      listening={false}
+    />
+  );
+});
+
 const CellSquare: FC<CellShapeProps> = React.memo(({ color }) => {
-  return <Line points={[0, 0, 1, 0, 1, 1, 0, 1]} closed fill={color} stroke={color} strokeWidth={0} listening={false} transformsEnabled="" />;
+  return (
+    <Line
+      points={[0 + MARGIN, 0 + MARGIN, 1 - MARGIN, 0 + MARGIN, 1 - MARGIN, 1 - MARGIN, 0 + MARGIN, 1 - MARGIN]}
+      closed
+      fill={color}
+      strokeWidth={0}
+      listening={false}
+    />
+  );
+});
+
+const CellDisc: FC<CellShapeProps> = React.memo(({ color }) => {
+  return <Circle x={0.5} y={0.5} radius={0.5 - 0.5 * MARGIN} fill={color} strokeWidth={0} listening={false} />;
 });
 
 const createShape = (shape: Shape, color: string) => {
-  if (shape === Shape.CROSS) {
-    return <CellCross color={color} />;
+  switch (shape) {
+    case Shape.CROSS:
+      return <CellCross color={color} />;
+    case Shape.CIRCLE:
+      return <CellCircle color={color} />;
+    case Shape.SQUARE:
+      return <CellSquare color={color} />;
+    case Shape.DISC:
+      return <CellDisc color={color} />;
+    default:
+      return null;
   }
-  if (shape === Shape.SQUARE) {
-    return <CellSquare color={color} />;
-  }
-  return null;
 };
 
 export interface CellProps {
