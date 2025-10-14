@@ -58,7 +58,7 @@ const WorkspaceCard: FC<WorkspaceCardProps> = ({
       </Card.Header>
       <Card.Body>
         <Stack gap={2}>
-          <ThumbnailWrapper className="d-flex align-items-center py-2" onClick={onClickOpen}>
+          <ThumbnailWrapper className="d-flex align-items-center justify-content-center py-2" onClick={onClickOpen}>
             {workspace.thumbnail && <Thumbnail src={workspace.thumbnail} className="mx-auto" />}
           </ThumbnailWrapper>
           <Stack>
