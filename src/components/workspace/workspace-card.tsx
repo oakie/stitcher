@@ -11,7 +11,7 @@ const StyledCard = styled(Card)<{ $expand: boolean }>`
 
 const ThumbnailWrapper = styled.div`
   height: 8rem;
-  padding: 1rem;
+  overflow: hidden;
   background-color: white;
   margin-top: -1rem;
   margin-left: -1rem;
@@ -58,7 +58,7 @@ const WorkspaceCard: FC<WorkspaceCardProps> = ({
       </Card.Header>
       <Card.Body>
         <Stack gap={2}>
-          <ThumbnailWrapper className="d-flex align-items-center" onClick={onClickOpen}>
+          <ThumbnailWrapper className="d-flex align-items-center py-2" onClick={onClickOpen}>
             {workspace.thumbnail && <Thumbnail src={workspace.thumbnail} className="mx-auto" />}
           </ThumbnailWrapper>
           <Stack>
