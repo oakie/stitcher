@@ -1,11 +1,11 @@
 import Canvas from '@components/canvas';
 import Palette from '@components/palette';
+import useResizeObserver from '@shared/use-resize-observer';
 import { useWorkspaceState, WorkspaceProvider } from '@store';
 import React, { FC } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
-import useResizeObserver from 'use-resize-observer';
 
 const BottomCenter = styled.div`
   position: fixed;
