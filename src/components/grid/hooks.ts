@@ -8,21 +8,15 @@ interface GridBreakpoints {
 }
 
 export const useGridBreakpoints = (scale: Point, size: Size, center: Point) => {
-  const [grid, setGrid] = React.useState<GridBreakpoints>({ x: [], y: [] });
-
-  React.useEffect(() => {
+  return React.useMemo<GridBreakpoints>(() => {
     const xmin = center.x - (0.5 * size.width) / scale.x;
     const xmax = center.x + (0.5 * size.width) / scale.x;
     const ymin = center.y - (0.5 * size.height) / scale.y;
     const ymax = center.y + (0.5 * size.height) / scale.y;
 
-    const step = 1;
-
-    setGrid({
-      x: MathUtils.lerp(xmin, xmax, step),
-      y: MathUtils.lerp(ymin, ymax, step),
-    });
+    return {
+      x: MathUtils.lerp(xmin, xmax, 1),
+      y: MathUtils.lerp(ymin, ymax, 1),
+    };
   }, [scale, size, center]);
-
-  return grid;
 };

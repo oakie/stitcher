@@ -6,17 +6,14 @@ import { Outlet, useLocation } from 'react-router';
 
 const MainLayout: React.FC = () => {
   const location = useLocation();
-  const [showMenu, setShowMenu] = React.useState(false);
-
-  React.useEffect(() => {
-    setShowMenu(false);
-  }, [location]);
+  const [menuOpenKey, setMenuOpenKey] = React.useState<string | null>(null);
+  const showMenu = menuOpenKey === location.key;
 
   return (
     <>
-      <Header openMenu={() => setShowMenu(true)} />
+      <Header openMenu={() => setMenuOpenKey(location.key)} />
       <Outlet />
-      <Menu show={showMenu} onHide={() => setShowMenu(false)} />
+      <Menu show={showMenu} onHide={() => setMenuOpenKey(null)} />
       <DialogHost />
     </>
   );
